@@ -3,7 +3,7 @@
 
 class MoveToComponent : public Component {
 public:
-	MoveToComponent(GameObject* gameObject);
+	MoveToComponent();
 	~MoveToComponent();
 
 	void update(float elapsedTime) override;

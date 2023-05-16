@@ -3,7 +3,7 @@
 
 class CollisionComponent : public Component {
 public:
-	CollisionComponent(GameObject* gameObject);
+	CollisionComponent();
 	~CollisionComponent();
 
 	void update(float elapsedTime) override;

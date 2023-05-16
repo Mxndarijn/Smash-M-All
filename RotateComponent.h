@@ -3,7 +3,7 @@
 
 class RotateComponent : public Component {
 public: 
-	RotateComponent(GameObject* gameObject);
+	RotateComponent();
 	~RotateComponent();
 
 	void update(float elapsedTime) override;

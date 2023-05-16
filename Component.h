@@ -4,10 +4,12 @@ class GameObject;
 
 class Component {
 public:
-	Component(GameObject *gameObject);
+	Component();
 	~Component();
 
 	virtual void update(float elapsedTime) = 0;
+
+	inline void setGameObject(GameObject* gameObject) { this->gameObject = gameObject; }
 protected:
 	GameObject* gameObject;
 };

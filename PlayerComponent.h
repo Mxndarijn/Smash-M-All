@@ -3,7 +3,7 @@
 
 class PlayerComponent : public Component {
 public:
-	PlayerComponent(GameObject* gameObject);
+	PlayerComponent();
 	~PlayerComponent();
 
 	void update(float elapsedTime) override;

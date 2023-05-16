@@ -1,6 +1,6 @@
 #include "MoveToComponent.h"
 
-MoveToComponent::MoveToComponent(GameObject* gameObject) : Component(gameObject)
+MoveToComponent::MoveToComponent()
 {
 }
 

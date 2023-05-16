@@ -2,14 +2,21 @@
 #include <GLFW/glfw3.h>
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
-using tigl::Vertex;
 
 #include "MoveToComponent.h"
+#include "GameObject.h"
+using tigl::Vertex;
+
+
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
 
 GLFWwindow* window;
+
+double lastFrameTime = 0;
+
+std::vector<GameObject*> gameObjects;
 
 void init();
 void update();
@@ -30,7 +37,7 @@ int main(void)
     tigl::init();
 
     init();
-
+    
 	while (!glfwWindowShouldClose(window))
 	{
 		update();
@@ -56,7 +63,13 @@ void init()
 
 void update()
 {
+    double currentFrameTime = glfwGetTime();
+    double deltaTime = currentFrameTime - lastFrameTime;
+    lastFrameTime = currentFrameTime;
 
+    for (auto gameObject : gameObjects) {
+        gameObject->update(deltaTime);
+    }
 }
 
 void draw()
