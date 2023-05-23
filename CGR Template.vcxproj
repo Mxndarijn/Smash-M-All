@@ -161,8 +161,10 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="RotateComponent.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,8 +172,11 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="MoveToComponent.h" />
+    <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="RotateComponent.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
