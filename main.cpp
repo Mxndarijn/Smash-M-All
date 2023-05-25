@@ -3,6 +3,7 @@
 #include "tigl.h"
 #include "ObjModel.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -70,6 +71,7 @@ void update()
     double frameTime = glfwGetTime();
     float deltaTime = lastFrameTime - frameTime;
     lastFrameTime = frameTime;
+    rotation -= 0.10f * deltaTime;
 }
 
 void draw()
