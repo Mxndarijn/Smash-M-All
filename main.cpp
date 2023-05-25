@@ -11,7 +11,9 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 ObjModel* model;
-char modelPath[] = "models/car/honda_jazz.obj";
+char modelPath[] = "models/goomba/Goomba_Mario.obj";
+double lastFrameTime = 0;
+
 void init();
 void update();
 void draw();
@@ -63,7 +65,9 @@ float rotation = 0;
 
 void update()
 {
-    rotation += 0.01f;
+    double frameTime = glfwGetTime();
+    float deltaTime = lastFrameTime - frameTime;
+    lastFrameTime = frameTime;
 }
 
 void draw()
