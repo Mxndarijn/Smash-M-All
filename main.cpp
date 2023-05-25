@@ -11,12 +11,12 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 ObjModel* model;
-char modelPath[] = "models/goomba/Goomba_Mario.obj";
+char modelPath[] = "models/world/world.obj";
 double lastFrameTime = 0;
-
 void init();
 void update();
 void draw();
+void enableLight(bool state);
 
 int main(void)
 {
@@ -57,8 +57,10 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
+    enableLight(true);
 
     model = new ObjModel(modelPath);
+    
 }
 
 float rotation = 0;
@@ -72,7 +74,7 @@ void update()
 
 void draw()
 {
-    glClearColor(0.3f, 0.4f, 0.6f, 1.0f);
+    glClearColor(186.f / 255, 174.f / 255, 145.f / 255, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     int viewport[4];
@@ -90,4 +92,21 @@ void draw()
 
     glPointSize(10.0f);
     model->draw();
+}
+
+void enableLight(bool state)
+{
+    if (state) {
+        tigl::shader->enableLighting(true);
+        tigl::shader->setLightCount(1);
+        tigl::shader->setLightDirectional(0, false);
+        tigl::shader->setLightPosition(0, glm::vec3(0, 25, 0));
+        tigl::shader->setLightAmbient(0, glm::vec3(123.f / 255, 137.f / 255, 147.f / 255));
+        tigl::shader->setLightDiffuse(0, glm::vec3(0.8f, 0.8f, 0.8f));
+        tigl::shader->setLightSpecular(1, glm::vec3(225.f / 255, 159.f / 255, 0));
+        tigl::shader->setShinyness(5.f);
+    }
+    else {
+        tigl::shader->enableLighting(false);
+    }
 }
