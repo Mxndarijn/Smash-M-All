@@ -2,6 +2,7 @@
 #include <list>
 #include <memory>
 #include <glm/gtc/matrix_transform.hpp>
+#include "DrawComponent.h"
 
 class Component;
 
@@ -10,7 +11,7 @@ public:
 	GameObject();
 	~GameObject();
 
-	void addComponent(Component &component);
+	void addComponent(std::shared_ptr<Component> component);
 
 	void update(double deltaTime);
 	virtual void draw() = 0;
@@ -28,6 +29,7 @@ public:
 
 
 protected:
+	DrawComponent *drawComponent;
 	std::list<std::shared_ptr<Component>> components;
 
 	glm::vec3 transform;
