@@ -70,8 +70,8 @@ void init()
     camera->position = glm::vec3(-5.0f, 60.0f, -20.0f);
     camera->addComponent(std::make_shared<CameraComponent>(window));
     auto iets = glm::vec3(188, 20, -20);
-    camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
-    //camera->addComponent(std::make_shared<RotateComponent>());
+    //camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
+    camera->addComponent(std::make_shared<RotateComponent>());
 
     enableLight(true);
 
@@ -90,6 +90,7 @@ void update()
     
     if (turning) 
     {
+        camera->removeComponent<RotateComponent>();
         auto iets = glm::vec3(-170, 110, 150);
         camera->addComponent(std::make_shared<MoveToComponent>(iets, 270));
         turning = false;
