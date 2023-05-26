@@ -69,6 +69,7 @@ void init()
     camera = std::make_shared<GameObject>();
     camera->position = glm::vec3(-5.0f, 20.0f, -20.0f);
     camera->addComponent(std::make_shared<CameraComponent>(window));
+    camera->addComponent(std::make_shared<RotateComponent>());
 
     enableLight(true);
 
@@ -86,10 +87,9 @@ void update()
     
     if (turning) 
     {
-        
-        //camera->removeComponents();
         auto iets = glm::vec3(5, 0, 5);
         camera->addComponent(std::make_shared<MoveToComponent>(iets));
+        camera->removeComponent<RotateComponent>();
         turning = false;
     }
 

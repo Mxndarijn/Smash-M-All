@@ -20,11 +20,6 @@ void GameObject::addComponent(std::shared_ptr<Component> component)
 		drawComponent = dynamic_pointer_cast<DrawComponent>(component);
 }
 
-void GameObject::removeComponents() 
-{
-	components.clear();
-}
-
 std::list<std::shared_ptr<Component>> GameObject::getComponents()
 {
 	return components;
