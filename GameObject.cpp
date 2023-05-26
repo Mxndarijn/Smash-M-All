@@ -41,9 +41,29 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 	drawComponent->draw();
 }
 
-void GameObject::update(double deltaTime)
+void GameObject::update(float elapsedTime)
 {
-	for (auto component : components) {
-		component->update((float)deltaTime);
-	}
+    // Remove old components
+    if (!removeComponentTypes.empty()) {
+
+        for (const auto& removeType : removeComponentTypes)
+        {
+            auto it = components.begin();
+            while (it != components.end())
+            {
+                if (std::type_index(typeid(**it)) == removeType)
+                {
+                    it = components.erase(it);
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+        }
+        removeComponentTypes.clear();
+    }
+
+    for (auto& c : components)
+        c->update(elapsedTime);
 }

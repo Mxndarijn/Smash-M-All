@@ -25,5 +25,6 @@ void MoveToComponent::update(float elapsedTime)
 	if (distance < distanceThreshold) {
 		gameObject->position = target;
 		std::cout << "Removing MoveTo" << std::endl;
+		gameObject->removeComponent<MoveToComponent>();
 	}
 }

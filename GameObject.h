@@ -4,10 +4,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "DrawComponent.h"
 #include <glm/glm.hpp>
+#include <typeindex>
 
 class Component;
 
 class GameObject {
+	std::list<std::type_index> removeComponentTypes;
 	std::shared_ptr<DrawComponent> drawComponent;
 	std::list<std::shared_ptr<Component>> components;
 
@@ -20,20 +22,15 @@ public:
 	glm::vec3 scale = glm::vec3(1, 1, 1);
 
 	void addComponent(std::shared_ptr<Component> component);
-	void removeComponents();
 
-	void update(double deltaTime);
+	void update(float deltaTime);
 	virtual void draw() {};
 
 
 	template<class T>
 	void removeComponent()
 	{
-		components.remove_if([](Component* c)
-			{
-				T* t = dynamic_cast<T*>(c);
-				return t != nullptr;
-			});
+		removeComponentTypes.push_back(std::type_index(typeid(T)));
 	}
 
 	template<class T>
