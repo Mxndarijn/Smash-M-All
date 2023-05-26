@@ -67,9 +67,11 @@ void init()
         });
 
     camera = std::make_shared<GameObject>();
-    camera->position = glm::vec3(-5.0f, 20.0f, -20.0f);
+    camera->position = glm::vec3(-5.0f, 60.0f, -20.0f);
     camera->addComponent(std::make_shared<CameraComponent>(window));
-    camera->addComponent(std::make_shared<RotateComponent>());
+    auto iets = glm::vec3(188, 20, -20);
+    camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
+    //camera->addComponent(std::make_shared<RotateComponent>());
 
     enableLight(true);
 
@@ -85,14 +87,14 @@ void update()
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
     
+    
     if (turning) 
     {
-        auto iets = glm::vec3(5, 0, 5);
-        camera->addComponent(std::make_shared<MoveToComponent>(iets));
-        camera->removeComponent<RotateComponent>();
+        auto iets = glm::vec3(-170, 110, 150);
+        camera->addComponent(std::make_shared<MoveToComponent>(iets, 270));
         turning = false;
     }
-
+    
     camera->update(deltaTime);
 }
 
