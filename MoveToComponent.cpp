@@ -35,7 +35,7 @@ void MoveToComponent::update(float elapsedTime)
     gameObject->rotation.y = interpolateRotationExponential(glm::degrees(gameObject->rotation.y), degrees, DELTA_TIME, DURATION);
     std::cout << gameObject->rotation.y << std::endl;
 
-    if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.01f) {
+    if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.001f) {
         gameObject->rotation.y = radians;
         gameObject->position = target;
         gameObject->removeComponent<MoveToComponent>();
