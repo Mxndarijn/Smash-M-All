@@ -1,12 +1,17 @@
 #pragma once
 #include "Component.h"
+#include <glm/glm.hpp>
+#include "GameObject.h"
 
-class MoveToComponent : public Component {
+class MoveToComponent :
+	public Component
+{
 public:
-	MoveToComponent();
+	float speed = 0.05f;
+	glm::vec3 target;
+
+	MoveToComponent(glm::vec3 target);
 	~MoveToComponent();
 
-	void update(float elapsedTime) override;
-private:
-
+	virtual void update(float elapsedTime) override;
 };

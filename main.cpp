@@ -2,8 +2,13 @@
 #include <GLFW/glfw3.h>
 #include "tigl.h"
 #include "ObjModel.h"
+#include "GameObject.h"
+#include "CameraComponent.h"
+#include "MoveToComponent.h"
+#include "RotateComponent.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include "Timerf.h"
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -18,6 +23,8 @@ void init();
 void update();
 void draw();
 void enableLight(bool state);
+
+std::shared_ptr<GameObject> camera;
 
 int main(void)
 {
@@ -49,6 +56,7 @@ int main(void)
     return 0;
 }
 
+bool turning = false;
 
 void init()
 {
@@ -58,20 +66,34 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
+    camera = std::make_shared<GameObject>();
+    camera->position = glm::vec3(-5.0f, 20.0f, -20.0f);
+    camera->addComponent(std::make_shared<CameraComponent>(window));
+
     enableLight(true);
 
     model = new ObjModel(modelPath);
-    
-}
 
-float rotation = 0;
+    Timerf *t = new Timerf(2000, &turning);
+    t->startTimer();
+}
 
 void update()
 {
     double frameTime = glfwGetTime();
-    float deltaTime = lastFrameTime - frameTime;
+    float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
-    rotation -= 0.10f * deltaTime;
+    
+    if (turning) 
+    {
+        
+        //camera->removeComponents();
+        auto iets = glm::vec3(5, 0, 5);
+        camera->addComponent(std::make_shared<MoveToComponent>(iets));
+        turning = false;
+    }
+
+    camera->update(deltaTime);
 }
 
 void draw()
@@ -83,9 +105,11 @@ void draw()
     glGetIntegerv(GL_VIEWPORT, viewport);
     glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
 
+    auto cameraComponent = camera->getComponent<CameraComponent>();
+
     tigl::shader->setProjectionMatrix(projection);
-    tigl::shader->setViewMatrix(glm::lookAt(glm::vec3(0, 50, 100), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0)));
-    tigl::shader->setModelMatrix(glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0, 1, 0)));
+    tigl::shader->setViewMatrix(cameraComponent->getMatrix());
+    tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
     tigl::shader->enableColor(true);
 

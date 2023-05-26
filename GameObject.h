@@ -20,9 +20,10 @@ public:
 	glm::vec3 scale = glm::vec3(1, 1, 1);
 
 	void addComponent(std::shared_ptr<Component> component);
+	void removeComponents();
 
 	void update(double deltaTime);
-	virtual void draw() = 0;
+	virtual void draw() {};
 
 
 	template<class T>
@@ -38,9 +39,10 @@ public:
 	template<class T>
 	std::shared_ptr<T> getComponent()
 	{
-		std::shared_ptr<T> t = dynamic_pointer_cast<T>(c);
-		for (auto t : components)
+		
+		for (auto c : components)
 		{
+			std::shared_ptr<T> t = dynamic_pointer_cast<T>(c);
 			if (t)
 			{
 				return t;

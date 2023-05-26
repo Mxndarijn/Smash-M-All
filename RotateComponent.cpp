@@ -10,4 +10,5 @@ RotateComponent::~RotateComponent()
 
 void RotateComponent::update(float elapsedTime)
 {
+	
 }
