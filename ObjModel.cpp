@@ -180,8 +180,7 @@ ObjModel::ObjModel(const std::string& fileName)
 		if (!materials.empty()) {
 			MaterialInfo* material = materials[group->materialIndex];
 			if (material && material->texture) {
-				tigl::shader->enableTexture(true);
-				material->texture->bind();
+				texture = material->texture;
 			}
 		}
 
@@ -218,44 +217,15 @@ void ObjModel::draw()
 	//  foreach face in group
 	//    foreach vertex in face
 	//      emit vertex
-	tigl::drawVertices(GL_TRIANGLES, tigl::createVbo(verts));
-}
-
-void ObjModel::drawWorld()
-{
-	//foreach group in groups
-	//  set material texture, if available
-	//  set material color, if available
-	//  foreach face in group
-	//    foreach vertex in face
-	//      emit vertex
-
-	tigl::begin(GL_TRIANGLES);
-	for (auto group : groups) {
-		if (!materials.empty()) {
-			MaterialInfo* material = materials[group->materialIndex];
-			if (material && material->texture) {
-				tigl::shader->enableTexture(true);
-				material->texture->bind();
-			}
-		}
-
-		for (const auto& face : group->faces) {
-			for (const auto& vertex : face.vertices) {
-				//std::cout << "position: " << vertex.position << ", normal: " << vertex.normal << ", texcoord: " << vertex.texcoord << ".\n";
-				if (vertex.normal < 0 && vertex.texcoord < 0)
-					tigl::addVertex(tigl::Vertex::P(vertices[vertex.position]));
-				else if (vertex.normal < 0)
-					tigl::addVertex(tigl::Vertex::PT(vertices[vertex.position], texcoords[vertex.texcoord]));
-				else if (vertex.texcoord < 0)
-					tigl::addVertex(tigl::Vertex::PN(vertices[vertex.position], normals[vertex.normal]));
-				else
-					tigl::addVertex(tigl::Vertex::PTN(vertices[vertex.position], texcoords[vertex.texcoord], normals[vertex.normal]));
-			}
-		}
+	if (texture)
+	{
+		texture->bind();
+		tigl::shader->enableTexture(true);
+		tigl::drawVertices(GL_TRIANGLES, verts);
+		tigl::shader->enableTexture(false);
+		texture->unbind();
 	}
-	tigl::end();
-	tigl::shader->enableTexture(false);
+	//tigl::drawVertices(GL_TRIANGLES,verts);
 }
 
 void ObjModel::loadMaterialFile(const std::string& fileName, const std::string& dirName)

@@ -51,6 +51,7 @@ private:
 	std::vector<glm::vec2>	texcoords;
 	std::vector<ObjGroup*> groups;
 	std::vector<MaterialInfo*> materials;
+	Texture* texture;
 
 	void loadMaterialFile(const std::string& fileName, const std::string& dirName);
 public:

@@ -82,7 +82,7 @@ void init()
     camera = std::make_shared<GameObject>();
     camera->position = glm::vec3(-5.0f, 60.0f, -20.0f);
     camera->addComponent(std::make_shared<CameraComponent>(window));
-    auto iets = glm::vec3(188, 20, -20);
+    //auto iets = glm::vec3(188, 20, -20);
     //camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
     //camera->addComponent(std::make_shared<RotateComponent>());
 
@@ -114,9 +114,9 @@ void update()
         auto iets = glm::vec3(-170, 110, 150);
         camera->addComponent(std::make_shared<MoveToComponent>(iets, 270));
         turning = false;
-    }
+    }*/
     
-    camera->update(deltaTime);*/
+    //camera->update(deltaTime);
     debugCamera->update(window);
 }
 
@@ -140,18 +140,14 @@ void draw()
 
     glEnable(GL_DEPTH_TEST);
 
-    //glPointSize(10.0f);
+    glPointSize(10.0f);
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    //models[0]->drawWorld();
 
     for (auto& o : objects)
     {
         o->draw();
     }
-
-    std::cout << "Camera Pos: " << debugCamera->position.x << " , " << debugCamera->position.z << "\n";
 }
 
 void enableLight(bool state)
