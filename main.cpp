@@ -8,6 +8,9 @@
 #include "RotateComponent.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+
+#include "Camera.h"
+#include "ModelComponent.h"
 #include "Timerf.h"
 using tigl::Vertex;
 
@@ -16,15 +19,18 @@ using tigl::Vertex;
 #pragma comment(lib, "opengl32.lib")
 
 GLFWwindow* window;
-ObjModel* model;
-char modelPath[] = "models/world/world.obj";
+std::vector<ObjModel*> models;
+
 double lastFrameTime = 0;
 void init();
 void update();
 void draw();
 void enableLight(bool state);
 
+std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
+
+Camera* debugCamera;
 
 int main(void)
 {
@@ -60,22 +66,37 @@ bool turning = false;
 
 void init()
 {
+
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             if (key == GLFW_KEY_ESCAPE)
                 glfwSetWindowShouldClose(window, true);
         });
 
+    models.push_back(new ObjModel("models/world/world.obj"));
+    models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
+    models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
+
+    debugCamera = new Camera(window);
+
     camera = std::make_shared<GameObject>();
     camera->position = glm::vec3(-5.0f, 60.0f, -20.0f);
     camera->addComponent(std::make_shared<CameraComponent>(window));
     auto iets = glm::vec3(188, 20, -20);
     //camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
-    camera->addComponent(std::make_shared<RotateComponent>());
+    //camera->addComponent(std::make_shared<RotateComponent>());
+
+    auto gameWorld = std::make_shared<GameObject>();
+    gameWorld->position = glm::vec3(0, 0 ,0);
+    gameWorld->addComponent(std::make_shared<ModelComponent>(models[0]));
+    objects.push_back(gameWorld);
+    
+    auto goomba = std::make_shared<GameObject>();
+    goomba->position = glm::vec3(50, 0, 50);
+    goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
+    objects.push_back(goomba);
 
     enableLight(true);
-
-    model = new ObjModel(modelPath);
 
     Timerf *t = new Timerf(2000, &turning);
     t->startTimer();
@@ -86,9 +107,8 @@ void update()
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
-    
-    
-    if (turning) 
+
+    /*if (turning) 
     {
         camera->removeComponent<RotateComponent>();
         auto iets = glm::vec3(-170, 110, 150);
@@ -96,7 +116,8 @@ void update()
         turning = false;
     }
     
-    camera->update(deltaTime);
+    camera->update(deltaTime);*/
+    debugCamera->update(window);
 }
 
 void draw()
@@ -111,16 +132,26 @@ void draw()
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
     tigl::shader->setProjectionMatrix(projection);
-    tigl::shader->setViewMatrix(cameraComponent->getMatrix());
+    //tigl::shader->setViewMatrix(cameraComponent->getMatrix());
+    tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
     tigl::shader->enableColor(true);
 
     glEnable(GL_DEPTH_TEST);
 
+    //glPointSize(10.0f);
 
-    glPointSize(10.0f);
-    model->draw();
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    //models[0]->drawWorld();
+
+    for (auto& o : objects)
+    {
+        o->draw();
+    }
+
+    std::cout << "Camera Pos: " << debugCamera->position.x << " , " << debugCamera->position.z << "\n";
 }
 
 void enableLight(bool state)

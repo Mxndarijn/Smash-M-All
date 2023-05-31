@@ -175,17 +175,53 @@ ObjModel::ObjModel(const std::string& fileName)
 		}
 	}
 	groups.push_back(currentGroup);
-}
 
+	for (auto group : groups) {
+		if (!materials.empty()) {
+			MaterialInfo* material = materials[group->materialIndex];
+			if (material && material->texture) {
+				tigl::shader->enableTexture(true);
+				material->texture->bind();
+			}
+		}
+
+		for (const auto& face : group->faces) {
+			for (const auto& vertex : face.vertices) {
+				//std::cout << "position: " << vertex.position << ", normal: " << vertex.normal << ", texcoord: " << vertex.texcoord << ".\n";
+				if (vertex.normal < 0 && vertex.texcoord < 0)
+					verts.push_back(tigl::Vertex::P(vertices[vertex.position]));
+				//tigl::addVertex(tigl::Vertex::P(vertices[vertex.position]));
+				else if (vertex.normal < 0)
+					verts.push_back(tigl::Vertex::PT(vertices[vertex.position], texcoords[vertex.texcoord]));
+				//tigl::addVertex(tigl::Vertex::PT(vertices[vertex.position], texcoords[vertex.texcoord]));
+				else if (vertex.texcoord < 0)
+					verts.push_back(tigl::Vertex::PN(vertices[vertex.position], normals[vertex.normal]));
+				//tigl::addVertex(tigl::Vertex::PN(vertices[vertex.position], normals[vertex.normal]));
+				else
+					verts.push_back(tigl::Vertex::PTN(vertices[vertex.position], texcoords[vertex.texcoord], normals[vertex.normal]));
+				//tigl::addVertex(tigl::Vertex::PTN(vertices[vertex.position], texcoords[vertex.texcoord], normals[vertex.normal]));
+			}
+		}
+	}
+	tigl::shader->enableTexture(false);
+}
 
 ObjModel::~ObjModel(void)
 {
 }
 
-
-
-
 void ObjModel::draw()
+{
+	//foreach group in groups
+	//  set material texture, if available
+	//  set material color, if available
+	//  foreach face in group
+	//    foreach vertex in face
+	//      emit vertex
+	tigl::drawVertices(GL_TRIANGLES, tigl::createVbo(verts));
+}
+
+void ObjModel::drawWorld()
 {
 	//foreach group in groups
 	//  set material texture, if available
@@ -204,9 +240,8 @@ void ObjModel::draw()
 			}
 		}
 
-
-		for (auto face : group->faces) {
-			for (auto vertex : face.vertices) {
+		for (const auto& face : group->faces) {
+			for (const auto& vertex : face.vertices) {
 				//std::cout << "position: " << vertex.position << ", normal: " << vertex.normal << ", texcoord: " << vertex.texcoord << ".\n";
 				if (vertex.normal < 0 && vertex.texcoord < 0)
 					tigl::addVertex(tigl::Vertex::P(vertices[vertex.position]));
@@ -279,6 +314,8 @@ void ObjModel::loadMaterialFile(const std::string& fileName, const std::string& 
 			params[0] == "map_bump" ||
 			params[0] == "map_ke" ||
 			params[0] == "map_ka" ||
+			params[0] == "map_ns" ||
+			params[0] == "map_refl" ||
 			params[0] == "map_d" ||
 			params[0] == "d" ||
 			params[0] == "ke" ||
