@@ -28,6 +28,9 @@
     <Filter Include="Header Files\gameobjects">
       <UniqueIdentifier>{aacb9897-aa8e-43a0-809e-84e3b92faabc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gameobjects\shapes">
+      <UniqueIdentifier>{d718cbe7-c3b2-4b1a-8fd9-0c27b08073df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
