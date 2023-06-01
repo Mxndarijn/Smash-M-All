@@ -9,6 +9,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include "Timerf.h"
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -23,6 +28,7 @@ void init();
 void update();
 void draw();
 void enableLight(bool state);
+void renderGUI();
 
 std::shared_ptr<GameObject> camera;
 
@@ -44,10 +50,18 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
-        update();
-        draw();
-        glfwSwapBuffers(window);
         glfwPollEvents();
+
+        
+        
+        update();
+ 
+        
+        draw();
+        
+        renderGUI();
+        
+        glfwSwapBuffers(window);
     }
 
     glfwTerminate();
@@ -59,7 +73,15 @@ int main(void)
 bool turning = false;
 
 void init()
-{
+{   
+    // ImGui initialisatie
+    ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330 core");
+
+    // Stijl aanpassen (optioneel)
+    ImGui::StyleColorsDark();
+
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             if (key == GLFW_KEY_ESCAPE)
@@ -68,6 +90,7 @@ void init()
 
     camera = std::make_shared<GameObject>();
     camera->position = glm::vec3(-5.0f, 60.0f, -20.0f);
+    //camera->position = glm::vec3(-0.0f, 0.0f, -0.0f);
     camera->addComponent(std::make_shared<CameraComponent>(window));
     auto iets = glm::vec3(188, 20, -20);
     //camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
@@ -83,6 +106,7 @@ void init()
 
 void update()
 {
+
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
@@ -138,4 +162,26 @@ void enableLight(bool state)
     else {
         tigl::shader->enableLighting(false);
     }
+}
+
+void renderGUI()
+{
+    // ImGui-start van het frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // GUI-opbouw
+    ImGui::Begin("Mijn GUI");
+    ImGui::Text("Hallo, dit is mijn eerste GUI met ImGui en OpenGL!");
+    if (ImGui::Button("Klik me!"))
+    {
+        // Actie wanneer er op de knop wordt geklikt
+        std::cout << "De knop is geklikt!" << std::endl;
+    }
+    ImGui::End();
+
+    // ImGui-renderen
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

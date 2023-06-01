@@ -9,7 +9,6 @@ CameraComponent::~CameraComponent() {
 
 CameraComponent::CameraComponent(GLFWwindow* window) : window(window) {
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
@@ -17,6 +16,7 @@ CameraComponent::CameraComponent(GLFWwindow* window) : window(window) {
 
 void CameraComponent::update(float elapsedTime)
 {
+	
 }
 
 glm::mat4 CameraComponent::getMatrix()
