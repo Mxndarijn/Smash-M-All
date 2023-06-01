@@ -1,5 +1,6 @@
 #include "RotateComponent.h"
 #include "GameObject.h"
+#include <iostream>
 
 RotateComponent::RotateComponent()
 {
@@ -27,4 +28,11 @@ void RotateComponent::update(float elapsedTime)
 
 	lastX = x;
 	lastY = y;
+
+	std::cout << glm::degrees(gameObject->rotation.y) << std::endl;
+
+	if (glm::degrees(gameObject->rotation.y) >= 360)
+	{	
+		gameObject->rotation.y = 0;
+	}
 }

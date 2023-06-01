@@ -9,10 +9,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include "Timerf.h"
+#include <random>
+#include "Spawnpoint.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
+#define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 
 using tigl::Vertex;
 
@@ -24,6 +28,10 @@ GLFWwindow* window;
 ObjModel* model;
 char modelPath[] = "models/world/world.obj";
 double lastFrameTime = 0;
+bool drawGui = true;
+
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
+
 void init();
 void update();
 void draw();
@@ -51,15 +59,12 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-
-        
-        
         update();
- 
-        
         draw();
         
-        renderGUI();
+        if (drawGui) {
+            renderGUI();
+        }
         
         glfwSwapBuffers(window);
     }
@@ -74,6 +79,8 @@ bool turning = false;
 
 void init()
 {   
+    srand(time(nullptr));
+
     // ImGui initialisatie
     ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -89,19 +96,18 @@ void init()
         });
 
     camera = std::make_shared<GameObject>();
-    camera->position = glm::vec3(-5.0f, 60.0f, -20.0f);
-    //camera->position = glm::vec3(-0.0f, 0.0f, -0.0f);
+    camera->position = CAMERA_SPAWN;
+    
     camera->addComponent(std::make_shared<CameraComponent>(window));
-    auto iets = glm::vec3(188, 20, -20);
-    //camera->addComponent(std::make_shared<MoveToComponent>(iets, 180));
+    
     camera->addComponent(std::make_shared<RotateComponent>());
 
     enableLight(true);
 
     model = new ObjModel(modelPath);
 
-    Timerf *t = new Timerf(2000, &turning);
-    t->startTimer();
+    //Timerf *t = new Timerf(2000, &turning);
+    //t->startTimer();
 }
 
 void update()
@@ -111,7 +117,7 @@ void update()
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
     
-    
+    /*
     if (turning) 
     {
         camera->removeComponent<RotateComponent>();
@@ -119,6 +125,7 @@ void update()
         camera->addComponent(std::make_shared<MoveToComponent>(iets, 270));
         turning = false;
     }
+    */
     
     camera->update(deltaTime);
 }
@@ -171,17 +178,39 @@ void renderGUI()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 windowSize = io.DisplaySize;
+    ImVec2 guiSize = ImVec2(200, 100);  
+
+    // Bereken de positie van het midden van het scherm
+    ImVec2 guiPosition = ImVec2((windowSize.x - guiSize.x) * 0.5f, (windowSize.y - guiSize.y) * 0.5f);
+
+    ImGui::SetNextWindowPos(guiPosition);
+    ImGui::SetNextWindowSize(guiSize);
+
     // GUI-opbouw
-    ImGui::Begin("Mijn GUI");
-    ImGui::Text("Hallo, dit is mijn eerste GUI met ImGui en OpenGL!");
-    if (ImGui::Button("Klik me!"))
+    ImGui::Begin("Mijn GUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
+
+    ImVec2 buttonSize = ImVec2(185, 80);
+    if (ImGui::Button("PLAY!", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
         std::cout << "De knop is geklikt!" << std::endl;
+        camera->removeComponent<RotateComponent>();
+        auto i = Spawnpoints[rand()%2];
+        camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot));
+        drawGui = false;
     }
+    
     ImGui::End();
 
     // ImGui-renderen
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    if (drawGui) return;
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
