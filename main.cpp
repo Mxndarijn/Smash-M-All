@@ -109,7 +109,7 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
-    debugCamera = new Camera(window);
+    //debugCamera = new Camera(window);
 
     camera = std::make_shared<GameObject>();
     camera->position = CAMERA_SPAWN;
@@ -151,8 +151,8 @@ void update()
     }
     */
     
-    //camera->update(deltaTime);
-    debugCamera->update(window);
+    camera->update(deltaTime);
+    //debugCamera->update(window);
 }
 
 void draw()
@@ -167,8 +167,8 @@ void draw()
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
     tigl::shader->setProjectionMatrix(projection);
-    //tigl::shader->setViewMatrix(cameraComponent->getMatrix());
-    tigl::shader->setViewMatrix(debugCamera->getMatrix());
+    tigl::shader->setViewMatrix(cameraComponent->getMatrix());
+    //tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
     tigl::shader->enableColor(true);

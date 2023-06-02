@@ -24,7 +24,7 @@ void RotateComponent::update(float elapsedTime)
 
 	if (tempX < 1.4f && tempX > -1.0f)
 		gameObject->rotation.x = tempX;
-	gameObject->rotation.y -= (float)(lastX - x) / 100.f;
+	gameObject->rotation.y -= (float)(lastX - x) / 5.f * elapsedTime;
 
 	lastX = x;
 	lastY = y;
