@@ -17,6 +17,8 @@
 #include "imgui_impl_opengl3.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
+#define GUI_HEIGHT 400
+#define GUI_WIDTH 400
 
 using tigl::Vertex;
 
@@ -181,8 +183,8 @@ void renderGUI()
     ImGui::NewFrame();
 
     ImGuiIO& io = ImGui::GetIO();
+    ImVec2 guiSize = ImVec2(GUI_WIDTH, GUI_HEIGHT);
     ImVec2 windowSize = io.DisplaySize;
-    ImVec2 guiSize = ImVec2(200, 100);  
 
     // Bereken de positie van het midden van het scherm
     ImVec2 guiPosition = ImVec2((windowSize.x - guiSize.x) * 0.5f, (windowSize.y - guiSize.y) * 0.5f);
@@ -193,7 +195,19 @@ void renderGUI()
     // GUI-opbouw
     ImGui::Begin("Mijn GUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
 
-    ImVec2 buttonSize = ImVec2(185, 80);
+    // Title
+    ImGui::SetWindowFontScale(2.2f);
+    ImGui::Text("");
+    auto title = "Smash'm'all!";
+    auto textWidth = ImGui::CalcTextSize(title).x;
+    ImGui::SetCursorPosX((GUI_WIDTH - textWidth) * 0.5f);
+    ImGui::Text(title);
+    ImGui::Text("");
+
+    //Play button
+    ImGui::SetWindowFontScale(2.0f);
+    ImVec2 buttonSize = ImVec2(GUI_WIDTH - 30, 80);
+    ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
     if (ImGui::Button("PLAY!", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
