@@ -20,12 +20,12 @@ public:
 	glm::vec3 position;
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 scale = glm::vec3(1, 1, 1);
+	std::list<std::shared_ptr<Component>> getComponents();
 
+	void draw(const glm::mat4 & = glm::mat4(1.0f));
 	void addComponent(std::shared_ptr<Component> component);
 
 	void update(float deltaTime);
-	virtual void draw() {};
-
 
 	template<class T>
 	void removeComponent()
@@ -48,6 +48,5 @@ public:
 		return nullptr;
 	}
 
-	void draw(const glm::mat4& parentMatrix);
-	std::list<std::shared_ptr<Component>> getComponents();
+
 };

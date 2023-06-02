@@ -7,7 +7,7 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:/Users/xande/Downloads/super-mario-world-map/textures/lambert1_albedo.jpeg
-map_Ns C:/Users/xande/Downloads/super-mario-world-map/textures/lambert1_roughness.jpeg
-map_refl C:/Users/xande/Downloads/super-mario-world-map/world/lambert1_metallic.jpeg
-map_Ke C:/Users/xande/Downloads/super-mario-world-map/textures/lambert1_emissive.jpeg
+map_Kd lambert1_albedo.jpeg
+map_Ns lambert1_roughness.jpeg
+map_refl lambert1_metallic.jpeg
+map_Ke lambert1_emissive.jpeg

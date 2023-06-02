@@ -8,6 +8,9 @@
 #include "RotateComponent.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+
+#include "Camera.h"
+#include "ModelComponent.h"
 #include "Timerf.h"
 #include <random>
 #include "Spawnpoint.h"
@@ -27,8 +30,8 @@ using tigl::Vertex;
 #pragma comment(lib, "opengl32.lib")
 
 GLFWwindow* window;
-ObjModel* model;
-char modelPath[] = "models/world/world.obj";
+std::vector<ObjModel*> models;
+
 double lastFrameTime = 0;
 bool drawGui = true;
 
@@ -41,7 +44,10 @@ void enableLight(bool state);
 void renderGUI();
 void setColorGui();
 
+std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
+
+Camera* debugCamera;
 
 int main(void)
 {
@@ -99,6 +105,12 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
+    models.push_back(new ObjModel("models/world/world.obj"));
+    models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
+    models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
+
+    debugCamera = new Camera(window);
+
     camera = std::make_shared<GameObject>();
     camera->position = CAMERA_SPAWN;
     
@@ -106,9 +118,17 @@ void init()
     
     camera->addComponent(std::make_shared<RotateComponent>());
 
-    enableLight(true);
+    auto gameWorld = std::make_shared<GameObject>();
+    gameWorld->position = glm::vec3(0, 0 ,0);
+    gameWorld->addComponent(std::make_shared<ModelComponent>(models[0]));
+    objects.push_back(gameWorld);
+    
+    auto goomba = std::make_shared<GameObject>();
+    goomba->position = glm::vec3(50, 0, 50);
+    goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
+    objects.push_back(goomba);
 
-    model = new ObjModel(modelPath);
+    enableLight(true);
 
     //Timerf *t = new Timerf(2000, &turning);
     //t->startTimer();
@@ -131,7 +151,8 @@ void update()
     }
     */
     
-    camera->update(deltaTime);
+    //camera->update(deltaTime);
+    debugCamera->update(window);
 }
 
 void draw()
@@ -146,16 +167,22 @@ void draw()
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
     tigl::shader->setProjectionMatrix(projection);
-    tigl::shader->setViewMatrix(cameraComponent->getMatrix());
+    //tigl::shader->setViewMatrix(cameraComponent->getMatrix());
+    tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
     tigl::shader->enableColor(true);
 
     glEnable(GL_DEPTH_TEST);
 
-
     glPointSize(10.0f);
-    model->draw();
+
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    for (auto& o : objects)
+    {
+        o->draw();
+    }
 }
 
 void enableLight(bool state)
