@@ -7,12 +7,15 @@
 #include <vector>
 #include <list>
 
+#include "tigl.h"
+
 class Texture;
 
 
 
 class ObjModel
 {
+	std::vector<tigl::Vertex> verts;
 private:
 	class Vertex
 	{
@@ -43,12 +46,12 @@ private:
 		std::list<Face> faces;
 	};
 
-
 	std::vector<glm::vec3>	vertices;
 	std::vector<glm::vec3>	normals;
 	std::vector<glm::vec2>	texcoords;
 	std::vector<ObjGroup*> groups;
 	std::vector<MaterialInfo*> materials;
+	Texture* texture;
 
 	void loadMaterialFile(const std::string& fileName, const std::string& dirName);
 public:
@@ -56,4 +59,5 @@ public:
 	~ObjModel(void);
 
 	void draw();
+	void drawWorld();
 };

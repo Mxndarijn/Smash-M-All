@@ -2,35 +2,51 @@
 #include <list>
 #include <memory>
 #include <glm/gtc/matrix_transform.hpp>
+#include "DrawComponent.h"
+#include <glm/glm.hpp>
+#include <typeindex>
 
 class Component;
 
 class GameObject {
+	std::list<std::type_index> removeComponentTypes;
+	std::shared_ptr<DrawComponent> drawComponent;
+	std::list<std::shared_ptr<Component>> components;
+
 public:
 	GameObject();
 	~GameObject();
 
-	void addComponent(Component &component);
+	glm::vec3 position;
+	glm::vec3 rotation = glm::vec3(0, 0, 0);
+	glm::vec3 scale = glm::vec3(1, 1, 1);
+	std::list<std::shared_ptr<Component>> getComponents();
 
-	void update(double deltaTime);
-	virtual void draw() = 0;
+	void draw(const glm::mat4 & = glm::mat4(1.0f));
+	void addComponent(std::shared_ptr<Component> component);
 
+	void update(float deltaTime);
 
 	template<class T>
 	void removeComponent()
 	{
-		components.remove_if([](Component* c)
+		removeComponentTypes.push_back(std::type_index(typeid(T)));
+	}
+
+	template<class T>
+	std::shared_ptr<T> getComponent()
+	{
+		
+		for (auto c : components)
+		{
+			std::shared_ptr<T> t = dynamic_pointer_cast<T>(c);
+			if (t)
 			{
-				T* t = dynamic_cast<T*>(c);
-				return t != nullptr;
-			});
+				return t;
+			}
+		}
+		return nullptr;
 	}
 
 
-protected:
-	std::list<std::shared_ptr<Component>> components;
-
-	glm::vec3 transform;
-	glm::vec3 rotate;
-	glm::vec3 translate;
 };

@@ -7,7 +7,7 @@ public:
 	Component();
 	~Component();
 
-	virtual void update(float elapsedTime) = 0;
+	virtual void update(float elapsedTime) {};
 
 	inline void setGameObject(GameObject* gameObject) { this->gameObject = gameObject; }
 protected:
