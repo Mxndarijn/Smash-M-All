@@ -1,6 +1,7 @@
 #include "CameraComponent.h"
 #include <GLFW/glfw3.h>
 #include "GameObject.h"
+#include "PlayerComponent.h"
 #include <iostream>
 
 CameraComponent::~CameraComponent() {
@@ -8,7 +9,6 @@ CameraComponent::~CameraComponent() {
 }
 
 CameraComponent::CameraComponent(GLFWwindow* window) : window(window) {
-
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
@@ -16,7 +16,31 @@ CameraComponent::CameraComponent(GLFWwindow* window) : window(window) {
 
 void CameraComponent::update(float elapsedTime)
 {
-	
+	static bool init = false;
+	if (!init) {
+		init = true;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+	if (gameObject->getComponent<PlayerComponent>()) {
+		double x, y;
+		glfwGetCursorPos(window, &x, &y);
+
+		static double lastX = x;
+		static double lastY = y;
+
+
+		float tempX = gameObject->rotation.x - (float)(lastY - y) / 100.f;
+
+		auto minWatchHeight = -1.f;
+		auto maxWatchHeight = 1.4f;
+
+		if (tempX < maxWatchHeight && tempX > minWatchHeight)
+			gameObject->rotation.x = tempX;
+		gameObject->rotation.y -= (float)(lastX - x) / 100.f;
+
+		lastX = x;
+		lastY = y;
+	}
 }
 
 glm::mat4 CameraComponent::getMatrix()

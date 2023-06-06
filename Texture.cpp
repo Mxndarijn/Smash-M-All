@@ -68,7 +68,7 @@ Texture::Texture(cv::Mat mat)
 
 std::vector<unsigned char> Texture::matToBytes(cv::Mat image) {
     std::vector<unsigned char> byteArray;
-    cv::imencode(".jpg", image, byteArray);
+    cv::imencode(".png", image, byteArray);
     return byteArray;
 }
 

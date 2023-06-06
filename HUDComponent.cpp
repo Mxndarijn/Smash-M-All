@@ -4,15 +4,27 @@
 #include "glm/gtx/compatibility.hpp"
 #include "Texture.h"
 #include "GameObject.h"
+#include <iostream>
 
 HUDComponent::HUDComponent(std::string path)
 {
 	if (path._Equal("webcam")) {
+		std::cout << "webcam initialised\n";
 		webcam = new Webcam();
 	}
 	else {
 		texture = new Texture(path);
 	}
+
+	// size for hud
+	const float width = 0.295f;
+	const float height = 0.168f;
+
+	// vertices for quad of hud
+	verts.push_back(tigl::Vertex::PT(glm::vec3(-width, -height, 0.0f), glm::vec2(0, 0)));
+	verts.push_back(tigl::Vertex::PT(glm::vec3(width, -height, 0.0f), glm::vec2(1, 0)));
+	verts.push_back(tigl::Vertex::PT(glm::vec3(width, height, 0.0f), glm::vec2(1, 1)));
+	verts.push_back(tigl::Vertex::PT(glm::vec3(-width, height, 0.0f), glm::vec2(0, 1)));
 }
 
 HUDComponent::~HUDComponent()
@@ -21,14 +33,20 @@ HUDComponent::~HUDComponent()
 
 void HUDComponent::update(float deltaTime)
 {
-	//texture = &webcam->getWebcamFrame();
+	if(webcam)
+		texture = webcam->getWebcamFrame();
 	updateHUDPosition();
 }
 
 void HUDComponent::updateHUDPosition() {
+
 	glm::mat4 ret(1.0f);
 	glm::vec3 position = -gameObject->position;
+	//glm::vec3 position = glm::vec3(50, 0, 50);
+	//std::cout << "Position: " << gameObject->position.x << " , " << gameObject->position.y << " , " << gameObject->position.z << std::endl;
+	//std::cout << "Position matrix: " << position.x << " , " << position.y << " , " << position.z << std::endl;
 
+	position.y *= -1;
 	// position of player
 	ret = glm::translate(ret, position);
 

@@ -3,15 +3,6 @@
 
 Webcam::Webcam()
 {
-    // size for hud
-    const float width = 0.295f;
-    const float height = 0.168f;
-
-    // vertices for quad of hud
-    verts.push_back(tigl::Vertex::PT(glm::vec3(-width, -height, 0.0f), glm::vec2(0, 0)));
-    verts.push_back(tigl::Vertex::PT(glm::vec3(width, -height, 0.0f), glm::vec2(1, 0)));
-    verts.push_back(tigl::Vertex::PT(glm::vec3(width, height, 0.0f), glm::vec2(1, 1)));
-    verts.push_back(tigl::Vertex::PT(glm::vec3(-width, height, 0.0f), glm::vec2(0, 1)));
 
     capture = cv::VideoCapture(0);
 }
@@ -20,13 +11,14 @@ Webcam::~Webcam()
 {
 }
 
-Texture Webcam::getWebcamFrame()
+Texture* Webcam::getWebcamFrame()
 {
     cv::Mat frame;
     cv::Mat result;
     capture >> frame;
     cutPerson(frame, result);
-    return Texture(result);
+    texture = new Texture(result);
+    return texture;
 }
 
 std::vector<unsigned char> Webcam::matToBytes(cv::Mat image) {
