@@ -88,6 +88,7 @@ int main(void)
         {
             guiManager->renderEndGUI(camera, score);
         }
+
         glfwSwapBuffers(window);
     }
 

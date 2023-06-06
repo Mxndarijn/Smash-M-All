@@ -17,7 +17,6 @@ Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpo
 
 GUIManager::GUIManager(GLFWwindow* window, bool& drawGUI, bool& drawEndGUI) : window(window), drawGUI(drawGUI), drawEndGUI(drawEndGUI)
 {
-	
 }
 
 GUIManager::~GUIManager()
@@ -25,7 +24,7 @@ GUIManager::~GUIManager()
 	
 }
 
-void GUIManager::renderGUI(std::shared_ptr<GameObject> camera)
+void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 {
     createFrame();
 
@@ -75,14 +74,10 @@ void GUIManager::renderGUI(std::shared_ptr<GameObject> camera)
     shutdown();
 }
 
-void GUIManager::renderEndGUI(std::shared_ptr<GameObject> camera, int score)
+void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int score)
 {
     init();
     createFrame();
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
 
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 guiSize = ImVec2(GUI_WIDTH, GUI_HEIGHT);

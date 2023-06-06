@@ -12,8 +12,8 @@ public:
 	GUIManager(GLFWwindow* window, bool& drawGUI, bool& drawEndGUI);
 	~GUIManager();
 
-	void renderGUI(std::shared_ptr<GameObject> camera);
-	void renderEndGUI(std::shared_ptr<GameObject> camera, int score);
+	void renderGUI(const std::shared_ptr<GameObject>& camera);
+	void renderEndGUI(const std::shared_ptr<GameObject>& camera, int score);
 	void update();
 	void init();
 	void shutdown();
