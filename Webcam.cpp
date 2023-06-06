@@ -53,4 +53,22 @@ void Webcam::cutPerson(cv::Mat& frame, cv::Mat& result) {
 
     // Merge rgba into a colored/multi-channeled image
     cv::merge(rgba, result);
+
+    result = makeTransparent(result);
+}
+
+cv::Mat Webcam::makeTransparent(cv::Mat& image) {
+    cv::Mat result;
+    image.convertTo(result, CV_32FC4);  // Convert to float type
+
+    std::vector<cv::Mat> channels;
+    cv::split(result, channels);
+    cv::Mat alpha = channels[3];
+
+    alpha *= 0.7;  // Reduce alpha values by 50%
+
+    cv::merge(channels, result);
+    result.convertTo(result, CV_8UC4);  // Convert back to 8-bit type
+
+    return result;
 }

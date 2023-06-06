@@ -57,7 +57,7 @@ void HUDComponent::updateHUDPosition() {
 	ret = glm::rotate(ret, -gameObject->rotation.x, glm::vec3(1, 0, 0));
 
 	// distance from camera
-	float zDistance = -.2f;
+	float zDistance = -.4f;
 
 	// move HUD slightly in front of player
 	position = glm::vec3(0.0f, 0.0f, zDistance);
