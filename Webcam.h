@@ -17,7 +17,7 @@ public:
 	Webcam();
 	~Webcam();
 
-	Texture getWebcamFrame();
+	Texture* getWebcamFrame();
 protected:
 	Texture* texture;
 	std::vector<tigl::Vertex> verts;

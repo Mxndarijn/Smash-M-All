@@ -19,6 +19,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "PlayerComponent.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 #define GUI_HEIGHT 400
@@ -188,6 +189,8 @@ void draw()
     {
         o->draw();
     }
+
+    camera->draw();
 }
 
 void enableLight(bool state)

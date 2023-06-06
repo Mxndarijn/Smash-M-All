@@ -9,7 +9,7 @@ class Texture;
 class HUDComponent : public DrawComponent {
 	std::vector<tigl::Vertex> verts;
 public:
-	HUDComponent(std::string path = "resource/textures/test.png");
+	HUDComponent(std::string path = "resources/textures/test.png");
 	~HUDComponent();
 
 	void update(float deltaTime) override;
@@ -17,10 +17,9 @@ public:
 
 	inline void updateTexture(Texture* texture) { this->texture = texture; }
 private:
-	Texture* texture;
-	glm::mat4 mat;
-
-	Webcam* webcam;
+	Texture* texture = nullptr;
+	Webcam* webcam = nullptr;
+	glm::mat4 mat;	
 private:
 	void bindHUD();
 	void unbindHUD();
