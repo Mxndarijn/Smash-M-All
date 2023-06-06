@@ -35,6 +35,7 @@ std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
 bool drawGui = true;
+int score = 0;
 
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
 int spawnPointIndex = 0;
@@ -44,6 +45,7 @@ void init();
 void update();
 void draw();
 void enableLight(bool state);
+void renderEndGUI();
 void renderGUI();
 void setColorGui();
 
@@ -75,7 +77,7 @@ int main(void)
         draw();
         
         if (drawGui) {
-            renderGUI();
+            renderEndGUI();
         }
         
         glfwSwapBuffers(window);
@@ -120,8 +122,8 @@ void init()
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
 
-    auto hudComponent = std::make_shared<HUDComponent>("webcam");
-    camera->addComponent(hudComponent);
+    //auto hudComponent = std::make_shared<HUDComponent>("webcam");
+    //camera->addComponent(hudComponent);
 
     auto gameWorld = std::make_shared<GameObject>();
     gameWorld->position = glm::vec3(0, 0 ,0);
@@ -253,6 +255,63 @@ void renderGUI()
     ImGui::End();
 
     // ImGui-renderen
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    if (drawGui) return;
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+void renderEndGUI()
+{
+    /*ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330 core");*/
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImVec2 guiSize = ImVec2(GUI_WIDTH, GUI_HEIGHT);
+    ImVec2 windowSize = io.DisplaySize;
+
+    ImVec2 guiPosition = ImVec2((windowSize.x - guiSize.x) * 0.5f, (windowSize.y - guiSize.y) * 0.5f);
+
+    ImGui::SetNextWindowPos(guiPosition);
+    ImGui::SetNextWindowSize(guiSize);
+
+    ImGui::Begin("Mijn GUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
+
+    ImGui::SetWindowFontScale(2.2f);
+    ImGui::Text("");
+    auto title = "Smash'm'all!";
+    auto textWidth = ImGui::CalcTextSize(title).x;
+    std::string sScore = std::to_string(score);
+    const char* cScore = sScore.c_str();
+    ImGui::SetCursorPosX((GUI_WIDTH - textWidth) * 0.5f);
+    ImGui::Text(title);
+    ImGui::Text("");
+    ImGui::Text("Score:");
+    ImGui::Text(cScore);
+
+    ImGui::SetWindowFontScale(2.0f);
+    ImVec2 buttonSize = ImVec2(GUI_WIDTH - 30, 80);
+    ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
+    if (ImGui::Button("Restart", buttonSize))
+    {
+        // Actie wanneer er op de knop wordt geklikt
+        std::cout << "De knop is geklikt!" << std::endl;
+        auto i = Spawnpoints[rand() % 2];
+        camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot));
+        drawGui = false;
+    }
+
+    ImGui::End();
+
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

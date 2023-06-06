@@ -188,6 +188,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
     <ClCompile Include="Timerf.cpp" />
+    <ClCompile Include="Webcam.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
     <ClInclude Include="Timerf.h" />
+    <ClInclude Include="Webcam.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

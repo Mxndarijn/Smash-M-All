@@ -21,7 +21,7 @@ HUDComponent::~HUDComponent()
 
 void HUDComponent::update(float deltaTime)
 {
-	texture = &webcam->getWebcamFrame();
+	//texture = &webcam->getWebcamFrame();
 	updateHUDPosition();
 }
 

@@ -105,6 +105,9 @@
     <ClCompile Include="HUDComponent.cpp">
       <Filter>Source Files\components</Filter>
     </ClCompile>
+    <ClCompile Include="Webcam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tigl.h">
@@ -184,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="HUDComponent.h">
       <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="Webcam.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
