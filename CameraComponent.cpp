@@ -16,12 +16,12 @@ CameraComponent::CameraComponent(GLFWwindow* window) : window(window) {
 
 void CameraComponent::update(float elapsedTime)
 {
-	static bool init = false;
-	if (!init) {
-		init = true;
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	}
 	if (gameObject->getComponent<PlayerComponent>()) {
+		static bool init = false;
+		if (!init) {
+			init = true;
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
 
