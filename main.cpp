@@ -19,7 +19,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
+#define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f)
 #define GUI_HEIGHT 400
 #define GUI_WIDTH 400
 
@@ -37,8 +37,6 @@ bool drawGui = true;
 
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
 
-// 
-
 void init();
 void update();
 void draw();
@@ -49,7 +47,13 @@ void setColorGui();
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
 
-Camera* debugCamera;
+//Camera* debugCamera;
+
+// Callback for screen resizer
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+    // Voer eventuele andere logica uit op basis van de nieuwe venstergrootte
+}
 
 int main(void)
 {
@@ -89,8 +93,12 @@ int main(void)
 bool turning = false;
 
 void init()
-{   
+{
+    // Seed for random
     srand(time(nullptr));
+
+    // Set Callback to resizer
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // ImGui initialisatie
     ImGui::CreateContext();
@@ -132,8 +140,6 @@ void init()
 
     enableLight(true);
 
-    //Timerf *t = new Timerf(2000, &turning);
-    //t->startTimer();
 }
 
 void update()
@@ -142,17 +148,6 @@ void update()
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
-    
-    /*
-    if (turning) 
-    {
-        camera->removeComponent<RotateComponent>();
-        auto iets = glm::vec3(-170, 110, 150);
-        camera->addComponent(std::make_shared<MoveToComponent>(iets, 270));
-        turning = false;
-    }
-    */
-    
     camera->update(deltaTime);
     //debugCamera->update(window);
 }
@@ -242,14 +237,11 @@ void renderGUI()
         // Actie wanneer er op de knop wordt geklikt
         std::cout << "De knop is geklikt!" << std::endl;
         camera->removeComponent<RotateComponent>();
-        int pos = rand() % 2;
+        int pos = rand() % 3;
         auto i = Spawnpoints[pos];
-        for (int i = pos; i < (sizeof(Spawnpoints) / sizeof(Spawnpoints[0])) - 1; i++) 
-        {
-            Spawnpoints[i] = Spawnpoints[i + 1];
-        }
+        
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot));
-        //drawGui = false;
+        drawGui = false;
     }
     
     ImGui::End();

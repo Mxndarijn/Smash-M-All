@@ -7,7 +7,7 @@ class MoveToComponent :
 	public Component
 {
 public:
-	float speed = 0.0035f;
+	float speed = 0.0025f;
 	float degrees;
 	glm::vec3 target;
 
