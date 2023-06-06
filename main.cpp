@@ -35,7 +35,9 @@ std::vector<ObjModel*> models;
 double lastFrameTime = 0;
 bool drawGui = true;
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
+
+// 
 
 void init();
 void update();
@@ -240,9 +242,14 @@ void renderGUI()
         // Actie wanneer er op de knop wordt geklikt
         std::cout << "De knop is geklikt!" << std::endl;
         camera->removeComponent<RotateComponent>();
-        auto i = Spawnpoints[rand()%2];
+        int pos = rand() % 2;
+        auto i = Spawnpoints[pos];
+        for (int i = pos; i < (sizeof(Spawnpoints) / sizeof(Spawnpoints[0])) - 1; i++) 
+        {
+            Spawnpoints[i] = Spawnpoints[i + 1];
+        }
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot));
-        drawGui = false;
+        //drawGui = false;
     }
     
     ImGui::End();

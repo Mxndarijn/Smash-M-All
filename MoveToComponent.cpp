@@ -3,7 +3,7 @@
 #include <cmath>
 
 #define DELTA_TIME 1.0f / 60.0f
-#define DURATION 18.0f
+#define DURATION 20.0f
 
 MoveToComponent::MoveToComponent(glm::vec3 target, float degrees) :
     target(target), degrees(degrees)
