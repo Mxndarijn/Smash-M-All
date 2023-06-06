@@ -170,6 +170,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="DrawComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GUIManager.cpp" />
     <ClCompile Include="HUDComponent.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="DrawComponent.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GUIManager.h" />
     <ClInclude Include="HUDComponent.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
