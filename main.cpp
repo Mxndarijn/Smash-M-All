@@ -11,13 +11,15 @@
 
 #include "Camera.h"
 #include "ModelComponent.h"
+#include "HUDComponent.h"
 #include "Timerf.h"
 #include <random>
 #include "Spawnpoint.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "PlayerComponent.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 #define GUI_HEIGHT 400
@@ -36,6 +38,8 @@ double lastFrameTime = 0;
 bool drawGui = true;
 
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
+int spawnPointIndex = 0;
+bool cameraMoving = false;
 
 void init();
 void update();
@@ -115,8 +119,10 @@ void init()
     camera->position = CAMERA_SPAWN;
     
     camera->addComponent(std::make_shared<CameraComponent>(window));
-    
     camera->addComponent(std::make_shared<RotateComponent>());
+
+    auto hudComponent = std::make_shared<HUDComponent>("webcam");
+    camera->addComponent(hudComponent);
 
     auto gameWorld = std::make_shared<GameObject>();
     gameWorld->position = glm::vec3(0, 0 ,0);
@@ -183,6 +189,8 @@ void draw()
     {
         o->draw();
     }
+
+    camera->draw();
 }
 
 void enableLight(bool state)
