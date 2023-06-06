@@ -14,6 +14,8 @@
 #include "HUDComponent.h"
 #include "Timerf.h"
 #include <random>
+
+#include "GUIManager.h"
 #include "Spawnpoint.h"
 
 #include "imgui/imgui.h"
@@ -22,8 +24,8 @@
 #include "PlayerComponent.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
-#define GUI_HEIGHT 400
-#define GUI_WIDTH 400
+/*#define GUI_HEIGHT 400
+#define GUI_WIDTH 400*/
 
 using tigl::Vertex;
 
@@ -32,13 +34,15 @@ using tigl::Vertex;
 #pragma comment(lib, "opengl32.lib")
 
 GLFWwindow* window;
+GUIManager* guiManager;
 std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
 bool drawGui = true;
+bool drawEndScreen = false;
 int score = 0;
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
+//Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
 int spawnPointIndex = 0;
 bool cameraMoving = false;
 
@@ -68,7 +72,6 @@ int main(void)
     glfwMakeContextCurrent(window);
 
     tigl::init();
-
     init();
 
     while (!glfwWindowShouldClose(window))
@@ -77,16 +80,18 @@ int main(void)
         update();
         draw();
         
-        if (drawGui) {
-            renderEndGUI();
+        if (drawGui)
+        {
+            guiManager->renderGUI(camera);
         }
-        
+        if (drawEndScreen)
+        {
+            guiManager->renderEndGUI(camera, score);
+        }
         glfwSwapBuffers(window);
     }
 
     glfwTerminate();
-
-
     return 0;
 }
 
@@ -95,15 +100,6 @@ bool turning = false;
 void init()
 {   
     srand(time(nullptr));
-
-    // ImGui initialisatie
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330 core");
-
-    // Stijl aanpassen (optioneel)
-    ImGui::StyleColorsDark();
-    setColorGui();
 
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
@@ -115,10 +111,13 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
+    guiManager = new GUIManager(window, drawGui, drawEndScreen);
+
+    guiManager->init();
     //debugCamera = new Camera(window);
 
     camera = std::make_shared<GameObject>();
-    camera->position = CAMERA_SPAWN;
+    camera->position = CAMERA_SPAWN
     
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
@@ -212,7 +211,7 @@ void enableLight(bool state)
     }
 }
 
-void renderGUI()
+/*void renderGUI()
 {
     // ImGui-start van het frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -272,7 +271,7 @@ void renderEndGUI()
 {
     /*ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330 core");*/
+    ImGui_ImplOpenGL3_Init("#version 330 core");#1#
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -381,4 +380,4 @@ void setColorGui()
     colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
-}
+}*/

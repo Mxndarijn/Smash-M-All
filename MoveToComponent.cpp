@@ -5,8 +5,8 @@
 #define DELTA_TIME 1.0f / 60.0f
 #define DURATION 18.0f
 
-MoveToComponent::MoveToComponent(glm::vec3 target, float degrees) :
-    target(target), degrees(degrees)
+MoveToComponent::MoveToComponent(glm::vec3 target, float degrees, bool& drawEndGUI) :
+    target(target), degrees(degrees), drawEndGUI(drawEndGUI)
 {
 }
 
@@ -40,6 +40,7 @@ void MoveToComponent::update(float elapsedTime)
         gameObject->rotation.y = radians;
         gameObject->position = target;
         gameObject->removeComponent<MoveToComponent>();
+        drawEndGUI = true;
     }
 }
 
