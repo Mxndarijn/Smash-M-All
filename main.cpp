@@ -86,6 +86,7 @@ int main(void)
         }
         if (drawEndScreen)
         {
+            guiManager->init(window);
             guiManager->renderEndGUI(camera, score);
         }
 
@@ -112,9 +113,9 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
-    guiManager = new GUIManager(window, drawGui, drawEndScreen);
+    guiManager = new GUIManager(drawGui, drawEndScreen);
 
-    guiManager->init();
+    guiManager->init(window);
     //debugCamera = new Camera(window);
 
     camera = std::make_shared<GameObject>();

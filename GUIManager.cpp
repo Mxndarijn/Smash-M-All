@@ -15,7 +15,7 @@
 
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
 
-GUIManager::GUIManager(GLFWwindow* window, bool& drawGUI, bool& drawEndGUI) : window(window), drawGUI(drawGUI), drawEndGUI(drawEndGUI)
+GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI) : drawGUI(drawGUI), drawEndGUI(drawEndGUI)
 {
 }
 
@@ -76,7 +76,6 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
 void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int score)
 {
-    init();
     createFrame();
 
     ImGuiIO& io = ImGui::GetIO();
@@ -88,7 +87,7 @@ void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int sco
     ImGui::SetNextWindowPos(guiPosition);
     ImGui::SetNextWindowSize(guiSize);
 
-    ImGui::Begin("Mijn GUI", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
+    ImGui::Begin("EndScreen", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
 
     ImGui::SetWindowFontScale(2.2f);
     ImGui::Text("");
@@ -111,7 +110,7 @@ void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int sco
         std::cout << "De knop is geklikt!" << std::endl;
         auto i = Spawnpoints[rand() % 2];
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI));
-        drawEndGUI = false;
+        //drawEndGUI = false;
     }
 
     ImGui::End();
@@ -129,7 +128,7 @@ void GUIManager::update()
 	
 }
 
-void GUIManager::init()
+void GUIManager::init(GLFWwindow* window)
 {
 	ImGui::CreateContext();
 	ImGui_ImplGlfw_InitForOpenGL(window, true);

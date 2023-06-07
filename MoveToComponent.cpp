@@ -39,8 +39,8 @@ void MoveToComponent::update(float elapsedTime)
     if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.001f) {
         gameObject->rotation.y = radians;
         gameObject->position = target;
-        gameObject->removeComponent<MoveToComponent>();
         drawEndGUI = true;
+        gameObject->removeComponent<MoveToComponent>();
     }
 }
 
