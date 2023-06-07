@@ -9,6 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib")
+
 #include "Camera.h"
 #include "ModelComponent.h"
 #include "Timerf.h"
@@ -34,6 +37,7 @@ std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
 bool drawGui = true;
+int volume = 100;
 
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
 
@@ -46,6 +50,7 @@ void setColorGui();
 
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
+irrklang::ISoundEngine* soundEngine;
 
 //Camera* debugCamera;
 
@@ -85,7 +90,7 @@ int main(void)
     }
 
     glfwTerminate();
-
+   
 
     return 0;
 }
@@ -94,6 +99,11 @@ bool turning = false;
 
 void init()
 {
+    // Initialising of soundEngine
+    soundEngine = irrklang::createIrrKlangDevice();
+    soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
+    irrklang::ISoundSource* soundSource = soundEngine->addSoundSourceFromFile("sounds/mariotheme.mp3");
+
     // Seed for random
     srand(time(nullptr));
 
@@ -139,7 +149,7 @@ void init()
     objects.push_back(goomba);
 
     enableLight(true);
-
+    irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
 }
 
 void update()
@@ -242,6 +252,14 @@ void renderGUI()
         
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot));
         drawGui = false;
+    }
+
+    ImGui::Text("");
+    
+    //ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
+    if(ImGui::SliderInt(" Volume", &volume, 0, 100))
+    {
+        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
     }
     
     ImGui::End();

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "GameObject.h"
 
+
 class MoveToComponent :
 	public Component
 {
