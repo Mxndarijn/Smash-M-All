@@ -9,6 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib")
+
 #include "Camera.h"
 #include "ModelComponent.h"
 #include "HUDComponent.h"
@@ -21,7 +24,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
 
-#define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
+#define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f)
 #define GUI_HEIGHT 400
 #define GUI_WIDTH 400
 
@@ -36,10 +39,11 @@ std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
 bool drawGui = true;
+int volume = 100;
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180)};
 int spawnPointIndex = 0;
 bool cameraMoving = false;
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
 
 void init();
 void update();
@@ -50,8 +54,15 @@ void setColorGui();
 
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
+irrklang::ISoundEngine* soundEngine;
 
-Camera* debugCamera;
+//Camera* debugCamera;
+
+// Callback for screen resizer
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+    // Voer eventuele andere logica uit op basis van de nieuwe venstergrootte
+}
 
 int main(void)
 {
@@ -83,7 +94,7 @@ int main(void)
     }
 
     glfwTerminate();
-
+   
 
     return 0;
 }
@@ -91,8 +102,17 @@ int main(void)
 bool turning = false;
 
 void init()
-{   
+{
+    // Initialising of soundEngine
+    soundEngine = irrklang::createIrrKlangDevice();
+    soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
+    irrklang::ISoundSource* soundSource = soundEngine->addSoundSourceFromFile("sounds/mariotheme.mp3");
+
+    // Seed for random
     srand(time(nullptr));
+
+    // Set Callback to resizer
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // ImGui initialisatie
     ImGui::CreateContext();
@@ -135,9 +155,7 @@ void init()
     objects.push_back(goomba);
 
     enableLight(true);
-
-    //Timerf *t = new Timerf(2000, &turning);
-    //t->startTimer();
+    irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
 }
 
 void update()
@@ -146,17 +164,6 @@ void update()
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
-    
-    /*
-    if (turning) 
-    {
-        camera->removeComponent<RotateComponent>();
-        auto iets = glm::vec3(-170, 110, 150);
-        camera->addComponent(std::make_shared<MoveToComponent>(iets, 270));
-        turning = false;
-    }
-    */
-    
     camera->update(deltaTime);
     //debugCamera->update(window);
 }
@@ -248,9 +255,19 @@ void renderGUI()
         // Actie wanneer er op de knop wordt geklikt
         std::cout << "De knop is geklikt!" << std::endl;
         camera->removeComponent<RotateComponent>();
-        auto i = Spawnpoints[rand()%2];
+        int pos = rand() % 3;
+        auto i = Spawnpoints[pos];
+        
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot));
         drawGui = false;
+    }
+
+    ImGui::Text("");
+    
+    //ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
+    if(ImGui::SliderInt(" Volume", &volume, 0, 100))
+    {
+        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
     }
     
     ImGui::End();
