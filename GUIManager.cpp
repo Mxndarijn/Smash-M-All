@@ -17,6 +17,7 @@ Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoin
 
 GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume) : drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume)
 {
+
 }
 
 GUIManager::~GUIManager()
