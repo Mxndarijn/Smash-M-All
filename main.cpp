@@ -94,7 +94,7 @@ int main(void)
         }
         if (drawEndScreen)
         {
-            guiManager->renderEndGUI(camera, score);
+            guiManager->renderEndGUI(window, camera, score);
         }
 
         glfwSwapBuffers(window);

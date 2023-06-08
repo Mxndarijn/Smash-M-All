@@ -13,7 +13,7 @@ public:
 	~GUIManager();
 
 	void renderGUI(const std::shared_ptr<GameObject>& camera);
-	void renderEndGUI(const std::shared_ptr<GameObject>& camera, int score);
+	void renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int score);
 	void update();
 	void init(GLFWwindow* window);
 	void shutdown();
