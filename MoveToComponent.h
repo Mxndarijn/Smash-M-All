@@ -3,11 +3,12 @@
 #include <glm/glm.hpp>
 #include "GameObject.h"
 
+
 class MoveToComponent :
 	public Component
 {
 public:
-	float speed = 0.005f;
+	float speed = 0.0025f;
 	float degrees;
 	bool& drawEndGUI;
 	glm::vec3 target;
