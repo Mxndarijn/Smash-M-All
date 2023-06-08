@@ -1,9 +1,10 @@
 #include "Webcam.h"
 #include "Texture.h"
 
-Webcam::Webcam()
-{
+#include <iostream>
 
+Webcam::Webcam(GLFWwindow* window) : window(window)
+{
     capture = cv::VideoCapture(0);
 }
 
@@ -18,9 +19,23 @@ Texture* Webcam::getWebcamFrame()
     capture >> frame;
     cutPerson(frame, result);
     findMovement(frame);
-    //Debugging
+
+    int imageWidth = result.cols;
+    int imageHeight = result.rows;
+
+    int screenWidth, screenHeight;
+    glfwGetWindowSize(window, &screenWidth, &screenHeight);
+    
     for (auto& point : detectionPoints) {
-        cv::circle(result, cv::Point(point.x + point.width / 2, point.y + point.height / 2), 10, cv::Scalar(0, 0, 10, 255), -1);
+        //Debugging
+        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 255), -1);
+        //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
+        // replacing the points according to screen size
+        int pointX = ((double) point.x / imageWidth) * screenWidth;
+        int pointY = ((double) point.y / imageHeight) * screenHeight;
+        cv::Point realPoint = cv::Point(pointX, pointY);
+        // std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
+        resizedDetectionPoints.push_back(realPoint);
     }
     texture = new Texture(result);
     return texture;
@@ -59,8 +74,9 @@ void Webcam::findMovement(cv::Mat& frame) {
     detectionPoints.clear();
     for (const auto& contour : contours)
     {
-        cv::Rect boundingRect = cv::boundingRect(contour);
-        detectionPoints.push_back(boundingRect);
+        cv::Rect rectangle = cv::boundingRect(contour);
+        auto point = cv::Point(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+        detectionPoints.push_back(point);
     }
 
     previousFrame = frame.clone();
