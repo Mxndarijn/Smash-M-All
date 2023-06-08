@@ -68,7 +68,6 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
     ImGui::Text("");
 
-    //ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
     if (ImGui::SliderInt(" Volume", &volume, 0, 100))
     {
         soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
@@ -82,7 +81,6 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
     if (drawGUI) return;
 
-    //shutdown();
 }
 
 void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int score)
@@ -130,8 +128,6 @@ void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int sco
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (drawEndGUI) return;
-
-    //shutdown();
 }
 
 void GUIManager::update()
