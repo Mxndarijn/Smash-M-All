@@ -5,8 +5,8 @@
 #define DELTA_TIME 1.0f / 60.0f
 #define DURATION 20.0f
 
-MoveToComponent::MoveToComponent(glm::vec3 target, float degrees) :
-    target(target), degrees(degrees)
+MoveToComponent::MoveToComponent(glm::vec3 target, float degrees, bool& drawEndGUI) :
+    target(target), degrees(degrees), drawEndGUI(drawEndGUI)
 {
 }
 
@@ -17,7 +17,7 @@ MoveToComponent::~MoveToComponent()
 void MoveToComponent::update(float elapsedTime)
 {
     auto minDistanceTraveled = 0.025f;
-    speed = 0.0035f / elapsedTime;
+    speed = 0.0005f / elapsedTime;
 
     auto newPos = (1 - speed) * gameObject->position + speed * target;
     auto distanceTraveled = glm::length(newPos - gameObject->position);
@@ -39,6 +39,7 @@ void MoveToComponent::update(float elapsedTime)
     if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.001f) {
         gameObject->rotation.y = radians;
         gameObject->position = target;
+        drawEndGUI = true;
         gameObject->removeComponent<MoveToComponent>();
     }
 }

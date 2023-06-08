@@ -10,9 +10,10 @@ class MoveToComponent :
 public:
 	float speed = 0.0025f;
 	float degrees;
+	bool& drawEndGUI;
 	glm::vec3 target;
 
-	MoveToComponent(glm::vec3 target, float degrees);
+	MoveToComponent(glm::vec3 target, float degrees, bool& drawEndGUI);
 	~MoveToComponent();
 
 	virtual void update(float elapsedTime) override;
