@@ -48,7 +48,7 @@ int volume = 100;
 
 int spawnPointIndex = 0;
 bool cameraMoving = false;
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
+//Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
 
 void init();
 void update();
@@ -90,14 +90,14 @@ int main(void)
         glfwPollEvents();
         update();
         draw();
-        
+
         if (drawGui)
         {
             guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
-            guiManager->init(window);
+            //guiManager->init(window);
             guiManager->renderEndGUI(camera, score);
         }
 
@@ -131,7 +131,7 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
-    guiManager = new GUIManager(drawGui, drawEndScreen);
+    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume);
 
     guiManager->init(window);
     //debugCamera = new Camera(window);
@@ -161,7 +161,6 @@ void init()
 
 void update()
 {
-
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;

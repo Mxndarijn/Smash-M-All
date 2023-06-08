@@ -17,7 +17,7 @@ MoveToComponent::~MoveToComponent()
 void MoveToComponent::update(float elapsedTime)
 {
     auto minDistanceTraveled = 0.025f;
-    speed = 0.0035f / elapsedTime;
+    speed = 0.0005f / elapsedTime;
 
     auto newPos = (1 - speed) * gameObject->position + speed * target;
     auto distanceTraveled = glm::length(newPos - gameObject->position);

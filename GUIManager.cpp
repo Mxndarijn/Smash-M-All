@@ -4,8 +4,8 @@
 #include <string>
 
 #include "Camera.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 #include "MoveToComponent.h"
 #include "RotateComponent.h"
 #include "Spawnpoint.h"
@@ -13,9 +13,9 @@
 #define GUI_HEIGHT 400
 #define GUI_WIDTH 400
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(-170, 110, 150), 270), Spawnpoint(glm::vec3(188, 20, -20), 180) };
 
-GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI) : drawGUI(drawGUI), drawEndGUI(drawEndGUI)
+GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume) : drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume)
 {
 }
 
@@ -56,11 +56,22 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
     ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
     if (ImGui::Button("PLAY!", buttonSize))
     {
+        // Actie wanneer er op de knop wordt geklikt
         std::cout << "De knop is geklikt!" << std::endl;
         camera->removeComponent<RotateComponent>();
-        auto i = Spawnpoints[rand() % 2];
+        int pos = rand() % 3;
+        auto i = Spawnpoints[pos];
+
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI));
         drawGUI = false;
+    }
+
+    ImGui::Text("");
+
+    //ImGui::SetCursorPosX((GUI_WIDTH - buttonSize.x) * 0.5f);
+    if (ImGui::SliderInt(" Volume", &volume, 0, 100))
+    {
+        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
     }
 
     ImGui::End();
@@ -71,7 +82,7 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
     if (drawGUI) return;
 
-    shutdown();
+    //shutdown();
 }
 
 void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int score)
@@ -110,7 +121,7 @@ void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int sco
         std::cout << "De knop is geklikt!" << std::endl;
         auto i = Spawnpoints[rand() % 2];
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI));
-        //drawEndGUI = false;
+        drawEndGUI = false;
     }
 
     ImGui::End();
@@ -120,7 +131,7 @@ void GUIManager::renderEndGUI(const std::shared_ptr<GameObject>& camera, int sco
 
     if (drawEndGUI) return;
 
-    shutdown();
+    //shutdown();
 }
 
 void GUIManager::update()
