@@ -19,7 +19,7 @@
 #include <random>
 
 #include "GUIManager.h"
-#include "Spawnpoint.h"
+#include "AudioController.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -59,7 +59,7 @@ void setColorGui();
 
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
-irrklang::ISoundEngine* soundEngine;
+AudioController* ac;
 
 Camera* debugCamera;
 
@@ -111,9 +111,7 @@ bool turning = false;
 void init()
 {
     // Initialising of soundEngine
-    soundEngine = irrklang::createIrrKlangDevice();
-    soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
-    irrklang::ISoundSource* soundSource = soundEngine->addSoundSourceFromFile("sounds/mariotheme.mp3");
+    ac = new AudioController(&volume);
 
     // Seed for random
     srand(time(nullptr));
@@ -129,7 +127,7 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
-    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &spawnEnemies);
+    guiManager = new GUIManager(drawGui, drawEndScreen, ac->soundEngine, volume, &spawnEnemies);
 
     guiManager->init(window);
     //debugCamera = new Camera(window);
@@ -153,7 +151,7 @@ void init()
     goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
 
     enableLight(true);
-    irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
+    
 }
 
 void update()
