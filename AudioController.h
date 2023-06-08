@@ -9,4 +9,8 @@ public:
 	~AudioController();
 	irrklang::ISoundEngine* soundEngine;
 	int* volume;
+	void run();
+	void switchStream();
+private:
+	void playContinuous();
 };

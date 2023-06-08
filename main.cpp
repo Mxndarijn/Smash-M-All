@@ -151,7 +151,8 @@ void init()
     goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
 
     enableLight(true);
-    
+
+    ac->run();
 }
 
 void update()
