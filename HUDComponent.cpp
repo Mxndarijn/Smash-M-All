@@ -33,6 +33,7 @@ HUDComponent::~HUDComponent()
 
 void HUDComponent::update(float deltaTime)
 {
+	delete texture;
 	if(webcam)
 		texture = webcam->getWebcamFrame();
 	updateHUDPosition();
