@@ -27,6 +27,7 @@
 #include "PlayerComponent.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
+#define OFFSET 75
 
 using tigl::Vertex;
 
@@ -46,6 +47,7 @@ int volume = 100;
 
 int spawnPointIndex = 0;
 bool cameraMoving = false;
+bool spawnEnemies = false;
 
 void init();
 void update();
@@ -127,7 +129,7 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
-    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume);
+    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &spawnEnemies);
 
     guiManager->init(window);
     //debugCamera = new Camera(window);
@@ -149,7 +151,6 @@ void init()
     auto goomba = std::make_shared<GameObject>();
     goomba->position = glm::vec3(50, 0, 50);
     goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
-    objects.push_back(goomba);
 
     enableLight(true);
     irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
@@ -162,6 +163,21 @@ void update()
     lastFrameTime = frameTime;
     camera->update(deltaTime);
     //debugCamera->update(window);
+    if (!spawnEnemies) return;
+    auto goomba = std::make_shared<GameObject>();
+    goomba->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * OFFSET)), camera->position.y , -(camera->position.z + (cos(camera->rotation.y) * OFFSET)));
+    if((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
+    {
+        goomba->rotation.y = camera->rotation.y + glm::radians(180.f);
+    }
+	else
+	{
+        goomba->rotation.y = -camera->rotation.y;
+	}
+    
+    goomba->addComponent(std::make_shared<ModelComponent>(models[2]));
+    objects.push_back(goomba);
+    spawnEnemies = false;
 }
 
 void draw()

@@ -11,9 +11,10 @@ public:
 	float speed = 0.0025f;
 	float degrees;
 	bool& drawEndGUI;
+	bool* spawnEnemy;
 	glm::vec3 target;
 
-	MoveToComponent(glm::vec3 target, float degrees, bool& drawEndGUI);
+	MoveToComponent(glm::vec3 target, float degrees, bool& drawEndGUI, bool* spawnEnemy);
 	~MoveToComponent();
 
 	virtual void update(float elapsedTime) override;
