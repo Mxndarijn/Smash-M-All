@@ -141,7 +141,7 @@ void init()
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
 
-    auto hudComponent = std::make_shared<HUDComponent>("webcam");
+    auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
     camera->addComponent(hudComponent);
 
     auto gameWorld = std::make_shared<GameObject>();

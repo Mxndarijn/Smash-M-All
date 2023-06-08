@@ -17,6 +17,11 @@ Texture* Webcam::getWebcamFrame()
     cv::Mat result;
     capture >> frame;
     cutPerson(frame, result);
+    findMovement(frame);
+    //Debugging
+    for (auto& point : detectionPoints) {
+        cv::circle(result, cv::Point(point.x + point.width / 2, point.y + point.height / 2), 10, cv::Scalar(0, 0, 10, 255), -1);
+    }
     texture = new Texture(result);
     return texture;
 }
@@ -25,6 +30,41 @@ std::vector<unsigned char> Webcam::matToBytes(cv::Mat image) {
     std::vector<unsigned char> byteArray;
     cv::imencode(".png", image, byteArray);
     return byteArray;
+}
+
+void Webcam::findMovement(cv::Mat& frame) {
+
+    cv::Mat frameDiff, motionMask;
+    cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);  // Convert to grayscale
+
+    if (previousFrame.empty())
+    {
+        previousFrame = frame;
+    }
+
+    // Compute absolute difference between the current and previous frame
+    cv::absdiff(frame, previousFrame, frameDiff);
+
+    // Apply threshold to obtain the motion mask
+    cv::threshold(frameDiff, motionMask, motionThreshold, 255, cv::THRESH_BINARY);
+
+    // Apply morphological operations to remove noise
+    cv::erode(motionMask, motionMask, cv::Mat());
+    cv::dilate(motionMask, motionMask, cv::Mat());
+
+    // Find contours of the motion areas
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(motionMask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    
+    detectionPoints.clear();
+    for (const auto& contour : contours)
+    {
+        cv::Rect boundingRect = cv::boundingRect(contour);
+        detectionPoints.push_back(boundingRect);
+    }
+
+    previousFrame = frame.clone();
+
 }
 
 void Webcam::cutPerson(cv::Mat& frame, cv::Mat& result) {

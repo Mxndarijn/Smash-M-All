@@ -27,4 +27,8 @@ protected:
 	void cutPerson(cv::Mat& frame, cv::Mat& result);
 	std::vector<unsigned char> matToBytes(cv::Mat image);
 	cv::Mat makeTransparent(cv::Mat& image);
+	cv::Mat previousFrame;
+	int motionThreshold = 40;
+	void findMovement(cv::Mat& frame);
+	std::list<cv::Rect> detectionPoints;
 };
