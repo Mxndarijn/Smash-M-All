@@ -1,9 +1,10 @@
 #include "Webcam.h"
 #include "Texture.h"
 
-Webcam::Webcam()
-{
+#include <iostream>
 
+Webcam::Webcam(GLFWwindow* window) : window(window)
+{
     capture = cv::VideoCapture(0);
 }
 
@@ -17,6 +18,25 @@ Texture* Webcam::getWebcamFrame()
     cv::Mat result;
     capture >> frame;
     cutPerson(frame, result);
+    findMovement(frame);
+
+    int imageWidth = result.cols;
+    int imageHeight = result.rows;
+
+    int screenWidth, screenHeight;
+    glfwGetWindowSize(window, &screenWidth, &screenHeight);
+    
+    for (auto& point : detectionPoints) {
+        //Debugging
+        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 255), -1);
+        //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
+        // replacing the points according to screen size
+        int pointX = ((double) point.x / imageWidth) * screenWidth;
+        int pointY = ((double) point.y / imageHeight) * screenHeight;
+        cv::Point realPoint = cv::Point(pointX, pointY);
+        // std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
+        resizedDetectionPoints.push_back(realPoint);
+    }
     texture = new Texture(result);
     return texture;
 }
@@ -25,6 +45,42 @@ std::vector<unsigned char> Webcam::matToBytes(cv::Mat image) {
     std::vector<unsigned char> byteArray;
     cv::imencode(".png", image, byteArray);
     return byteArray;
+}
+
+void Webcam::findMovement(cv::Mat& frame) {
+
+    cv::Mat frameDiff, motionMask;
+    cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);  // Convert to grayscale
+
+    if (previousFrame.empty())
+    {
+        previousFrame = frame;
+    }
+
+    // Compute absolute difference between the current and previous frame
+    cv::absdiff(frame, previousFrame, frameDiff);
+
+    // Apply threshold to obtain the motion mask
+    cv::threshold(frameDiff, motionMask, motionThreshold, 255, cv::THRESH_BINARY);
+
+    // Apply morphological operations to remove noise
+    cv::erode(motionMask, motionMask, cv::Mat());
+    cv::dilate(motionMask, motionMask, cv::Mat());
+
+    // Find contours of the motion areas
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(motionMask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    
+    detectionPoints.clear();
+    for (const auto& contour : contours)
+    {
+        cv::Rect rectangle = cv::boundingRect(contour);
+        auto point = cv::Point(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+        detectionPoints.push_back(point);
+    }
+
+    previousFrame = frame.clone();
+
 }
 
 void Webcam::cutPerson(cv::Mat& frame, cv::Mat& result) {

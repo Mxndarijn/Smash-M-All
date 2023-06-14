@@ -3,13 +3,14 @@
 #include "tigl.h"
 #include <string>
 #include "Webcam.h"
+#include "GLFW/glfw3.h"
 
 class Texture;
 
 class HUDComponent : public DrawComponent {
 	std::vector<tigl::Vertex> verts;
 public:
-	HUDComponent(std::string path = "resources/textures/test.png");
+	HUDComponent(GLFWwindow* window, std::string path = "resources/textures/test.png");
 	~HUDComponent();
 
 	void update(float deltaTime) override;
