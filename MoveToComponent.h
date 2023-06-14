@@ -8,7 +8,7 @@ class MoveToComponent :
 	public Component
 {
 public:
-	float speed = 0.0025f;
+	float speed = 0.01f;
 	float degrees;
 	bool& drawEndGUI;
 	bool* spawnEnemy;

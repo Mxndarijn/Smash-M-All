@@ -184,6 +184,7 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
+    <ClCompile Include="MoveEnemyComponent.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="ModelComponent.h" />
+    <ClInclude Include="MoveEnemyComponent.h" />
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PlayerComponent.h" />

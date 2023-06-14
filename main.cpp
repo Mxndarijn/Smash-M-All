@@ -19,6 +19,7 @@
 #include <random>
 
 #include "GUIManager.h"
+#include "MoveEnemyComponent.h"
 #include "Spawnpoint.h"
 
 #include "imgui/imgui.h"
@@ -162,10 +163,16 @@ void update()
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
     camera->update(deltaTime);
+
+    for (const auto& object : objects)
+    {
+        object->update(deltaTime);
+    }
     //debugCamera->update(window);
     if (!spawnEnemies) return;
+
     auto goomba = std::make_shared<GameObject>();
-    goomba->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * OFFSET)), camera->position.y , -(camera->position.z + (cos(camera->rotation.y) * OFFSET)));
+    goomba->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * OFFSET)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * OFFSET)));
     if((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
     {
         goomba->rotation.y = camera->rotation.y + glm::radians(180.f);
@@ -176,6 +183,7 @@ void update()
 	}
     
     goomba->addComponent(std::make_shared<ModelComponent>(models[2]));
+    goomba->addComponent(std::make_shared<MoveEnemyComponent>(camera));
     objects.push_back(goomba);
     spawnEnemies = false;
 }
