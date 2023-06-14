@@ -10,7 +10,7 @@ HUDComponent::HUDComponent(GLFWwindow* window, std::string path)
 {
 	if (path._Equal("webcam")) {
 		std::cout << "webcam initialised\n";
-		webcam = new Webcam();
+		webcam = new Webcam(window);
 	}
 	else {
 		texture = new Texture(path);
