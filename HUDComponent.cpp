@@ -36,7 +36,7 @@ void HUDComponent::update(float deltaTime)
 	delete texture;
 	if(webcam)
 		texture = webcam->getWebcamFrame();
-	updateHUDPosition();
+	//updateHUDPosition();
 }
 
 void HUDComponent::updateHUDPosition() {
@@ -71,6 +71,7 @@ void HUDComponent::updateHUDPosition() {
 
 void HUDComponent::draw()
 {
+	updateHUDPosition();
 	tigl::shader->setModelMatrix(this->mat);
 	bindHUD();
 
