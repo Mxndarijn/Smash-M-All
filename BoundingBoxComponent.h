@@ -10,12 +10,12 @@ public:
 	~BoundingBoxComponent();
 
 	void update(float deltaTime) override;
-	bool collide(std::shared_ptr<GameObject> obj);
+	bool collide(glm::vec3 collisionPoint);
 
 	glm::vec3 min;
 	glm::vec3 max;
 	glm::vec3 lengths;
 private:
 	std::array<glm::vec3, 4> getCorners(glm::vec3 minCorner, glm::vec3 maxCorner);
-	bool isColliding(glm::vec3 position, glm::vec3 minCorner, glm::vec3 maxCorner);
+	bool isColliding(glm::vec3 position, glm::vec3 collisionPoint);
 };

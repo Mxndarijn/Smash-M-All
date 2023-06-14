@@ -15,33 +15,24 @@ BoundingBoxComponent::~BoundingBoxComponent()
 {
 }
 
-bool BoundingBoxComponent::collide(std::shared_ptr<GameObject> obj)
+bool BoundingBoxComponent::collide(glm::vec3 collisionPoint)
 {
-	auto boundingBoxComponent = obj->getComponent<BoundingBoxComponent>();
-	if (!boundingBoxComponent)
-		return false;
-
 	auto cubeCorner1 = gameObject->position + min;
 	auto cubeCorner2 = gameObject->position + max;
 
 	auto corners = getCorners(-cubeCorner1, -cubeCorner2);
 
-	auto checkingCubeCorner1 = obj->position + boundingBoxComponent->min;
-	auto checkingCubeCorner2 = obj->position + boundingBoxComponent->max;
-
 	for (int i = 0; i < corners.size(); i++) {
-		if (isColliding(corners[i], checkingCubeCorner1, checkingCubeCorner2)) {
+		if (isColliding(corners[i], collisionPoint)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-bool BoundingBoxComponent::isColliding(glm::vec3 position, glm::vec3 minCorner, glm::vec3 maxCorner) {
-	glm::vec3 minimal = glm::min(minCorner, maxCorner);
-	glm::vec3 maximal = glm::max(minCorner, maxCorner);
-
-	return glm::all(glm::greaterThanEqual(position, minimal)) && glm::all(glm::lessThanEqual(position, maximal));
+bool BoundingBoxComponent::isColliding(glm::vec3 position, glm::vec3 collisionPoint) {
+	glm::vec3 maxCorner = position + lengths;
+	return glm::all(glm::greaterThanEqual(collisionPoint, position)) && glm::all(glm::lessThanEqual(collisionPoint, maxCorner));
 }
 
 std::array<glm::vec3, 4> BoundingBoxComponent::getCorners(glm::vec3 minCorner, glm::vec3 maxCorner)
