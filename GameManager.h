@@ -22,5 +22,6 @@ private:
 	const float spawnEnemyOffset;
 
 	int getRandomEnemy();
+	glm::vec3 randomizeEnemyPos(std::shared_ptr<GameObject>& camera);
 };
 

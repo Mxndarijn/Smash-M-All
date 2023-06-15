@@ -31,10 +31,10 @@ void GameManager::init()
 	objects.push_back(gameWorld);
 }
 
-void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) {
-
+void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) 
+{
 	auto enemy = std::make_shared<GameObject>();
-	enemy->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)));
+	enemy->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) + (rand() % 100)), camera->position.y - (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) + (rand() % 100));
 	if ((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
 	{
 		enemy->rotation.y = camera->rotation.y + glm::radians(180.f);
@@ -56,6 +56,22 @@ int GameManager::getRandomEnemy() {
 void GameManager::update()
 {
 
+}
+
+glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {
+	glm::vec3 enemyPos;
+
+	int random = rand() % 2;
+
+	if (random == 0)
+	{
+		enemyPos = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) + (rand() % 100)), camera->position.y - (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) + (rand() % 100));
+	}
+	else 
+	{
+		enemyPos = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) - (rand() % 100)), camera->position.y + (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) - (rand() % 100));
+	}
+	return enemyPos;
 }
 
 void GameManager::despawnEnemies()
