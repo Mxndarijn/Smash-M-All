@@ -26,6 +26,8 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
+#include "RayCastComponent.h"
+#include "Webcam.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 #define OFFSET 75
@@ -38,6 +40,7 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 GUIManager* guiManager;
+Webcam* webcam;
 std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
@@ -74,7 +77,7 @@ int main(void)
 {
     if (!glfwInit())
         throw "Could not initialize glwf";
-    window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1400, 800, "Super Mario", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -141,8 +144,15 @@ void init()
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
 
-    auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
+    webcam = new Webcam(window);
+    auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "webcam");
     camera->addComponent(hudComponent);
+
+    auto rayCastComponent = std::make_shared<RayCastComponent>(
+        webcam->getResolution(), 
+        webcam->getPoints()
+    );
+    camera->addComponent(rayCastComponent);
 
     auto gameWorld = std::make_shared<GameObject>();
     gameWorld->position = glm::vec3(0, 0 ,0);
@@ -195,7 +205,7 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 5000000000.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
@@ -217,7 +227,8 @@ void draw()
         o->draw();
     }
 
-    camera->draw();
+    camera->getComponent<HUDComponent>()->draw();
+    camera->getComponent<RayCastComponent>()->draw();
 }
 
 void enableLight(bool state)

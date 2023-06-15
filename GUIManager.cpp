@@ -13,7 +13,7 @@
 #define GUI_HEIGHT 400
 #define GUI_WIDTH 400
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) }; // , 
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1) }; // Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) }; // , 
 GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy) :
 drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy)
 {

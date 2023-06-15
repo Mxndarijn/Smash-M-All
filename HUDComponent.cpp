@@ -6,11 +6,14 @@
 #include "GameObject.h"
 #include <iostream>
 
-HUDComponent::HUDComponent(GLFWwindow* window, std::string path)
+HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
 {
-	if (path._Equal("webcam")) {
+	if (path._Equal("webcam") || webcam != nullptr) {
 		std::cout << "webcam initialised\n";
-		webcam = new Webcam(window);
+		if (webcam)
+			this->webcam = webcam;
+		else
+			webcam = new Webcam(window);
 	}
 	else {
 		texture = new Texture(path);
@@ -34,7 +37,7 @@ HUDComponent::~HUDComponent()
 void HUDComponent::update(float deltaTime)
 {
 	delete texture;
-	if(webcam)
+	if (webcam)
 		texture = webcam->getWebcamFrame();
 	//updateHUDPosition();
 }

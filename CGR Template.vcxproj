@@ -188,6 +188,7 @@
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
+    <ClCompile Include="RayCastComponent.cpp" />
     <ClCompile Include="RotateComponent.cpp" />
     <ClCompile Include="Spawnpoint.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PlayerComponent.h" />
+    <ClInclude Include="RayCastComponent.h" />
     <ClInclude Include="RotateComponent.h" />
     <ClInclude Include="Spawnpoint.h" />
     <ClInclude Include="stb_image.h" />
