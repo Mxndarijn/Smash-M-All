@@ -30,25 +30,34 @@ void GameManager::init()
 
 void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) {
 
-	auto enemey = std::make_shared<GameObject>();
-	enemey->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)));
+	auto enemy = std::make_shared<GameObject>();
+	enemy->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)));
 	if ((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
 	{
-		enemey->rotation.y = camera->rotation.y + glm::radians(180.f);
+		enemy->rotation.y = camera->rotation.y + glm::radians(180.f);
 	}
 	else
 	{
-		enemey->rotation.y = -camera->rotation.y;
+		enemy->rotation.y = -camera->rotation.y;
 	}
-
-	enemey->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
-	enemey->addComponent(std::make_shared<MoveEnemyComponent>(camera)); // camera type?
-	objects.push_back(enemey);
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	std::cout << getRandomEnemy() << std::endl;
+	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
+	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); // camera type?
+	objects.push_back(enemy);
 }
 
 int GameManager::getRandomEnemy() {
 	int listSize = models.size();
-	return 1 + (rand() % (listSize - 1));
+	return 2 + (rand() % (listSize - 2)); // -2/+2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }
 
 void GameManager::update()

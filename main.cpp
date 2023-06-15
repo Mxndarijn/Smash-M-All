@@ -128,6 +128,7 @@ void init()
         });
 
     models.push_back(new ObjModel("models/world/world.obj"));
+    models.push_back(new ObjModel("models/up/mario_1up.obj"));
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
 
