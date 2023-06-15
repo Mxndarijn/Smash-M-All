@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoundingBoxComponent.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CollisionComponent.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="MoveEnemyComponent.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="RotateComponent.cpp" />
     <ClCompile Include="Spawnpoint.cpp" />
@@ -197,8 +199,10 @@
     <ClCompile Include="Webcam.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingBoxComponent.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraState.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="DrawComponent.h" />
@@ -215,10 +219,12 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="MenuRectangle.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="MoveEnemyComponent.h" />
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="RotateComponent.h" />
     <ClInclude Include="Spawnpoint.h" />

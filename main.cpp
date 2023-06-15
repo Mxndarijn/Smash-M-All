@@ -19,7 +19,6 @@
 #include <random>
 
 #include "GUIManager.h"
-#include "MoveEnemyComponent.h"
 #include "Spawnpoint.h"
 
 #include "imgui/imgui.h"
@@ -29,8 +28,6 @@
 #include "GameManager.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
-#define OFFSET 75
-
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -76,7 +73,7 @@ int main(void)
 {
     if (!glfwInit())
         throw "Could not initialize glwf";
-    window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1400, 800, "Smash \'m all", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -157,7 +154,7 @@ void init()
     goomba->position = glm::vec3(50, 0, 50);
     goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
 
-    gameManager = new GameManager(objects);
+    gameManager = new GameManager(objects, models);
 
     enableLight(true);
     irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
@@ -178,20 +175,8 @@ void update()
     //debugCamera->update(window);
     if (!spawnEnemies) return;
 
-    auto goomba = std::make_shared<GameObject>();
-    goomba->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * OFFSET)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * OFFSET)));
-    if((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
-    {
-        goomba->rotation.y = camera->rotation.y + glm::radians(180.f);
-    }
-	else
-	{
-        goomba->rotation.y = -camera->rotation.y;
-	}
-    
-    goomba->addComponent(std::make_shared<ModelComponent>(models[2]));
-    goomba->addComponent(std::make_shared<MoveEnemyComponent>(camera));
-    objects.push_back(goomba);
+    gameManager->spawnEnemy(camera);
+
     spawnEnemies = false;
 }
 
