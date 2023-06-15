@@ -6,19 +6,19 @@
 #include "GameObject.h"
 #include <iostream>
 
-HUDComponent::HUDComponent(std::string path)
+HUDComponent::HUDComponent(GLFWwindow* window, std::string path)
 {
 	if (path._Equal("webcam")) {
 		std::cout << "webcam initialised\n";
-		webcam = new Webcam();
+		webcam = new Webcam(window);
 	}
 	else {
 		texture = new Texture(path);
 	}
 
 	// size for hud
-	const float width = 0.295f;
-	const float height = 0.168f;
+	const float width = 0.3f * 1.8f;
+	const float height = 0.171f * 1.8f;
 
 	// vertices for quad of hud
 	verts.push_back(tigl::Vertex::PT(glm::vec3(-width, -height, 0.0f), glm::vec2(0, 0)));
@@ -36,7 +36,7 @@ void HUDComponent::update(float deltaTime)
 	delete texture;
 	if(webcam)
 		texture = webcam->getWebcamFrame();
-	updateHUDPosition();
+	//updateHUDPosition();
 }
 
 void HUDComponent::updateHUDPosition() {
@@ -71,6 +71,7 @@ void HUDComponent::updateHUDPosition() {
 
 void HUDComponent::draw()
 {
+	updateHUDPosition();
 	tigl::shader->setModelMatrix(this->mat);
 	bindHUD();
 
