@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include <glm/vec3.hpp>
-
 #include "Component.h"
 
 class MoveEnemyComponent : public Component

@@ -26,6 +26,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
+#include "GameManager.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 #define OFFSET 75
@@ -38,6 +39,7 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 GUIManager* guiManager;
+GameManager* gameManager;
 std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
@@ -101,6 +103,8 @@ int main(void)
         }
 
         glfwSwapBuffers(window);
+
+        gameManager->despawnEnemies();
     }
 
     glfwTerminate();
@@ -153,6 +157,8 @@ void init()
     goomba->position = glm::vec3(50, 0, 50);
     goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
 
+    gameManager = new GameManager(objects);
+
     enableLight(true);
     irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
 }
@@ -168,6 +174,7 @@ void update()
     {
         object->update(deltaTime);
     }
+
     //debugCamera->update(window);
     if (!spawnEnemies) return;
 

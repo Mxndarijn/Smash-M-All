@@ -26,14 +26,32 @@ void MoveEnemyComponent::update(float elapsedTime)
     speed = 0.0005f / elapsedTime;
 
     auto target = glm::vec3( -camera->position.x, camera->position.y, -camera->position.z);
+    glm::vec3 direction = glm::normalize(target - gameObject->position);
 
     auto newPos = (1 - speed) * gameObject->position + speed * target;
     auto distanceTraveled = glm::length(newPos - gameObject->position);
     if (distanceTraveled < minDistanceTraveled && glm::length(gameObject->position - target) >= minDistanceTraveled) {
         // calculate newpos so it moves 0.1f
-        glm::vec3 direction = glm::normalize(target - gameObject->position);
         newPos = gameObject->position + direction * minDistanceTraveled;
     }
 
     gameObject->position = newPos;
+
+    if (gameObject->position.x >= target.x - 10.0f && gameObject->position.z >= target.z - 10.0f && direction.x >= 0  && direction.z >= 0 )
+    {
+        gameObject->isDead = true;
+    }
+    if (gameObject->position.x <= target.x + 10.0f && gameObject->position.z <= target.z + 10.0f && direction.x <= 0 && direction.z <= 0)
+    {
+        gameObject->isDead = true;
+    }
+    if (gameObject->position.x >= target.x - 10.0f && gameObject->position.z <= target.z + 10.0f && direction.x >= 0 && direction.z <= 0)
+    {
+        gameObject->isDead = true;
+    }
+    if (gameObject->position.x <= target.x + 10.0f && gameObject->position.z >= target.z - 10.0f && direction.x <= 0 && direction.z >= 0)
+    {
+        gameObject->isDead = true;
+    }
+
 }
