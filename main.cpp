@@ -67,6 +67,8 @@ irrklang::ISoundEngine* soundEngine;
 
 Camera* debugCamera;
 
+glm::mat4 projection;
+
 // Callback for screen resizer
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -149,7 +151,8 @@ void init()
     camera->addComponent(hudComponent);
 
     auto rayCastComponent = std::make_shared<RayCastComponent>(
-        webcam->getResolution(), 
+        webcam->getResolution(),
+        &projection,
         webcam->getPoints()
     );
     camera->addComponent(rayCastComponent);
@@ -205,7 +208,7 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 5000000000.0f);
+    projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
