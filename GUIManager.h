@@ -9,7 +9,7 @@ class GameObject;
 class GUIManager
 {
 public:
-	GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume);
+	GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy);
 	~GUIManager();
 
 	void renderGUI(const std::shared_ptr<GameObject>& camera);
@@ -24,5 +24,6 @@ private:
 	bool& drawGUI;
 	bool& drawEndGUI;
 	int& volume;
+	bool* spawnEnemy;
 	irrklang::ISoundEngine* soundEngine;
 };
