@@ -53,6 +53,7 @@ void init();
 void update();
 void draw();
 void enableLight(bool state);
+void enableFog(bool state);
 void renderEndGUI();
 void renderGUI();
 void setColorGui();
@@ -131,6 +132,7 @@ void init()
     models.push_back(new ObjModel("models/up/mario_1up.obj"));
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
+    // TODO: Guus moet Bullet Bill uploaden.
 
     guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &spawnEnemies);
 
@@ -146,18 +148,11 @@ void init()
     auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
     camera->addComponent(hudComponent);
 
-    auto gameWorld = std::make_shared<GameObject>();
-    gameWorld->position = glm::vec3(0, 0 ,0);
-    gameWorld->addComponent(std::make_shared<ModelComponent>(models[0]));
-    objects.push_back(gameWorld);
-    
-    auto goomba = std::make_shared<GameObject>();
-    goomba->position = glm::vec3(50, 0, 50);
-    goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
-
     gameManager = new GameManager(objects, models);
+    gameManager->init();
 
     enableLight(true);
+    enableFog(true);
     irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
 }
 
@@ -166,12 +161,15 @@ void update()
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
+
     camera->update(deltaTime);
 
     for (const auto& object : objects)
     {
         object->update(deltaTime);
     }
+
+    gameManager->update();
 
     //debugCamera->update(window);
     if (!spawnEnemies) return;
@@ -227,5 +225,18 @@ void enableLight(bool state)
     }
     else {
         tigl::shader->enableLighting(false);
+    }
+}
+
+void enableFog(bool state)
+{
+    if (state) {
+        tigl::shader->enableFog(true);
+        tigl::shader->setFogLinear(1, 4);
+        tigl::shader->setFogColor(glm::vec3(186.f / 255, 174.f / 255, 145.f / 255));
+        tigl::shader->setFogExp(.0025f);
+    }
+    else {
+        tigl::shader->enableFog(false);
     }
 }

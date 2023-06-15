@@ -25,7 +25,10 @@ GameManager::~GameManager()
 
 void GameManager::init()
 {
-	//load world
+	auto gameWorld = std::make_shared<GameObject>();
+	gameWorld->position = glm::vec3(0, 0, 0);
+	gameWorld->addComponent(std::make_shared<ModelComponent>(models[0]));
+	objects.push_back(gameWorld);
 }
 
 void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) {
@@ -40,16 +43,6 @@ void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) {
 	{
 		enemy->rotation.y = -camera->rotation.y;
 	}
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
-	std::cout << getRandomEnemy() << std::endl;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
 	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); // camera type?
 	objects.push_back(enemy);
@@ -57,7 +50,7 @@ void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) {
 
 int GameManager::getRandomEnemy() {
 	int listSize = models.size();
-	return 2 + (rand() % (listSize - 2)); // -2/+2 because index 0 is the world and index 1 is a powerup, not an enemy.
+	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }
 
 void GameManager::update()
