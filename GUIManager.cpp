@@ -85,7 +85,7 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
 }
 
-void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int score)
+void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, const int &score)
 {
     createFrame();
 

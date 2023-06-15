@@ -13,14 +13,14 @@ auto removeDead = [](std::shared_ptr<GameObject> object)
 	return false;
 };
 
-GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models) : objects(objects), models(models), spawnEnemyOffset(75.f)
+GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera) : objects(objects), models(models), camera(camera), spawnEnemyOffset(75.f)
 {
 
 }
 
 GameManager::~GameManager()
 {
-
+	delete spawnTimer;
 }
 
 void GameManager::init()
@@ -29,22 +29,17 @@ void GameManager::init()
 	gameWorld->position = glm::vec3(0, 0, 0);
 	gameWorld->addComponent(std::make_shared<ModelComponent>(models[0]));
 	objects.push_back(gameWorld);
+
+	spawnTimer = new Timerf(5000, enableEnemySpawn);
 }
 
-void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) 
+void GameManager::spawnEnemy() 
 {
 	auto enemy = std::make_shared<GameObject>();
 	enemy->position = randomizeEnemyPos(camera);
-	if ((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
-	{
-		enemy->rotation.y = camera->rotation.y + glm::radians(180.f);
-	}
-	else
-	{
-		enemy->rotation.y = -camera->rotation.y;
-	}
+	enemy->rotation.y = -camera->rotation.y;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
-	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); // camera type?
+	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
 	objects.push_back(enemy);
 }
 
@@ -55,7 +50,10 @@ int GameManager::getRandomEnemy() {
 
 void GameManager::update()
 {
-
+	if (enableEnemySpawn) {
+		spawnEnemy();
+		enableEnemySpawn = false;
+	}
 }
 
 glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {

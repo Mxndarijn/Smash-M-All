@@ -42,7 +42,6 @@ std::vector<ObjModel*> models;
 double lastFrameTime = 0;
 bool drawGui = true;
 bool drawEndScreen = false;
-int score = 0;
 int volume = 100;
 
 int spawnPointIndex = 0;
@@ -97,7 +96,7 @@ int main(void)
         }
         if (drawEndScreen)
         {
-            guiManager->renderEndGUI(window, camera, score);
+            guiManager->renderEndGUI(window, camera, gameManager->score);
         }
 
         glfwSwapBuffers(window);
@@ -148,7 +147,7 @@ void init()
     auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
     camera->addComponent(hudComponent);
 
-    gameManager = new GameManager(objects, models);
+    gameManager = new GameManager(objects, models, camera);
     gameManager->init();
 
     enableLight(true);
@@ -172,11 +171,6 @@ void update()
     gameManager->update();
 
     //debugCamera->update(window);
-    if (!spawnEnemies) return;
-
-    gameManager->spawnEnemy(camera);
-
-    spawnEnemies = false;
 }
 
 void draw()

@@ -3,9 +3,9 @@
 class Timerf 
 {
 	int delay;
-	bool* check;
+	bool& check;
 public:
-	Timerf(int delay, bool *check);
+	Timerf(int delay, bool& check);
 	~Timerf();
 
 	void startTimer();
