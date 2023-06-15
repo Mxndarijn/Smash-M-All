@@ -35,5 +35,10 @@ void MoveEnemyComponent::update(float elapsedTime)
         newPos = gameObject->position + direction * minDistanceTraveled;
     }
 
+    if (gameObject->position.x >= target.x - 0.01f && gameObject->position.z >= target.z - 0.01f)
+    {
+        gameObject->isDead = true;
+    }
+
     gameObject->position = newPos;
 }
