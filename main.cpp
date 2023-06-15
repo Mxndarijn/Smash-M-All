@@ -42,7 +42,6 @@ std::vector<ObjModel*> models;
 double lastFrameTime = 0;
 bool drawGui = true;
 bool drawEndScreen = false;
-int score = 0;
 int volume = 100;
 
 int spawnPointIndex = 0;
@@ -97,7 +96,7 @@ int main(void)
         }
         if (drawEndScreen)
         {
-            guiManager->renderEndGUI(window, camera, score);
+            guiManager->renderEndGUI(window, camera, gameManager->score);
         }
 
         glfwSwapBuffers(window);

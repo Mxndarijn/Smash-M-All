@@ -8,6 +8,9 @@
 class GameManager
 {
 public:
+	int score = 0;
+	int lives = 3;
+
 	GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models);
 	~GameManager();
 

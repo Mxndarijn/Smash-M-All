@@ -35,16 +35,9 @@ void GameManager::spawnEnemy(std::shared_ptr<GameObject>& camera) {
 
 	auto enemy = std::make_shared<GameObject>();
 	enemy->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)));
-	if ((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
-	{
-		enemy->rotation.y = camera->rotation.y + glm::radians(180.f);
-	}
-	else
-	{
-		enemy->rotation.y = -camera->rotation.y;
-	}
+	enemy->rotation.y = -camera->rotation.y;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
-	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); // camera type?
+	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
 	objects.push_back(enemy);
 }
 
