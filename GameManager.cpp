@@ -2,12 +2,15 @@
 #include <iostream>
 #include "MoveEnemyComponent.h"
 #include "ModelComponent.h"
+int aliveEnemies = 0;
+int count = 2;
 
 auto removeDead = [](std::shared_ptr<GameObject> object)
 {
 	if (object->isDead)
 	{
-		std::cout << "Removing enemies\n";
+		aliveEnemies--;
+		std::cout << "Removing enemies\nAlive enemies" << aliveEnemies << std::endl;;
 		return true;
 	}
 	return false;
@@ -41,6 +44,7 @@ void GameManager::spawnEnemy()
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
 	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
 	objects.push_back(enemy);
+	aliveEnemies++;
 }
 
 int GameManager::getRandomEnemy() {
@@ -48,12 +52,23 @@ int GameManager::getRandomEnemy() {
 	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }
 
-void GameManager::update()
+void GameManager::update(bool& endscreen)
 {
 	if (enableEnemySpawn) {
+		std::cout << "Spawn enemy, count: " << count << "timer is running : " << (spawnTimer->started ? "True" : "False") << std::endl;
 		spawnEnemy();
 		enableEnemySpawn = false;
+		count--;
+
+		if (!spawnTimer->started)
+			spawnTimer->startTimer();
+		if (count <= 0)
+		{
+			spawnTimer->started = false;
+		}
 	}
+	if (count <= 0 && aliveEnemies <= 0)
+		endscreen = true;
 }
 
 void GameManager::despawnEnemies()
