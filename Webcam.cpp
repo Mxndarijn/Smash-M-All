@@ -1,130 +1,169 @@
 #include "Webcam.h"
 #include "Texture.h"
-
+#include "RayCast.h"
 #include <iostream>
 
 Webcam::Webcam(GLFWwindow* window) : window(window)
 {
-    capture = cv::VideoCapture(0);
+	capture = new cv::VideoCapture(0);
+	rayCast = new RayCast(getResolution());
 }
 
 Webcam::~Webcam()
 {
+	delete capture;
 }
 
 Texture* Webcam::getWebcamFrame()
 {
-    cv::Mat frame;
-    cv::Mat result;
-    capture >> frame;
-    cutPerson(frame, result);
-    findMovement(frame);
+	detectionPoints.clear();
+	resizedDetectionPoints.clear();
+	coordinates.clear();
 
-    int imageWidth = result.cols;
-    int imageHeight = result.rows;
+	cv::Mat frame;
+	cv::Mat result;
+	*capture >> frame;
+	cutPerson(frame, result);
+	findMovement(frame);
 
-    int screenWidth, screenHeight;
-    glfwGetWindowSize(window, &screenWidth, &screenHeight);
-    
-    for (auto& point : detectionPoints) {
-        //Debugging
-        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 255), -1);
-        //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
-        // replacing the points according to screen size
-        int pointX = ((double) point.x / imageWidth) * screenWidth;
-        int pointY = ((double) point.y / imageHeight) * screenHeight;
-        cv::Point realPoint = cv::Point(pointX, pointY);
-        // std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
-        resizedDetectionPoints.push_back(realPoint);
-    }
-    texture = new Texture(result);
-    return texture;
+	int imageWidth = result.cols;
+	int imageHeight = result.rows;
+
+	int screenWidth, screenHeight;
+	glfwGetWindowSize(window, &screenWidth, &screenHeight);
+
+	for (auto& point : detectionPoints) {
+		//Debugging
+		cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 255), -1);
+		//std::cout << "Test: " << point.x << " , " << point.y << std::endl;
+		// replacing the points according to screen size
+		int pointX = ((double)point.x / imageWidth) * screenWidth;
+		int pointY = ((double)point.y / imageHeight) * screenHeight;
+		cv::Point realPoint = cv::Point(pointX, pointY);
+		//std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
+		resizedDetectionPoints.push_back(realPoint);
+	}
+
+	texture = new Texture(result);
+	return texture;
+}
+
+std::list<glm::vec3>* Webcam::getCoordinates()
+{
+	for (const auto& point : resizedDetectionPoints) {
+		coordinates.push_back(rayCast->pointToVec3(point));
+	}
+	return &coordinates;
+}
+
+void Webcam::drawANeef()
+{
+	glBegin(GL_LINES);
+	for (const auto& vec : coordinates) {
+		std::cout << "position drawing: " << vec.x << "," << vec.y << "," << vec.z << "\n";
+		glVertex3f(vec.x, vec.y, vec.z + 100);
+		glVertex3f(vec.x, vec.y, vec.z - 100);
+	}
+
+	glEnd();
+}
+
+cv::Point Webcam::getResolution()
+{
+	if (capture) {
+		unsigned width = static_cast<int>(capture->get(cv::CAP_PROP_FRAME_WIDTH));
+		unsigned height = static_cast<int>(capture->get(cv::CAP_PROP_FRAME_HEIGHT));
+
+		return cv::Point(width, height);
+	}
+
+	return cv::Point(-1, -1);
 }
 
 std::vector<unsigned char> Webcam::matToBytes(cv::Mat image) {
-    std::vector<unsigned char> byteArray;
-    cv::imencode(".png", image, byteArray);
-    return byteArray;
+	std::vector<unsigned char> byteArray;
+	cv::imencode(".png", image, byteArray);
+	return byteArray;
 }
 
 void Webcam::findMovement(cv::Mat& frame) {
 
-    cv::Mat frameDiff, motionMask;
-    cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);  // Convert to grayscale
+	cv::Mat frameDiff, motionMask;
+	cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);  // Convert to grayscale
 
-    if (previousFrame.empty())
-    {
-        previousFrame = frame;
-    }
+	if (previousFrame.empty())
+	{
+		previousFrame = frame;
+	}
 
-    // Compute absolute difference between the current and previous frame
-    cv::absdiff(frame, previousFrame, frameDiff);
+	// Compute absolute difference between the current and previous frame
+	cv::absdiff(frame, previousFrame, frameDiff);
 
-    // Apply threshold to obtain the motion mask
-    cv::threshold(frameDiff, motionMask, motionThreshold, 255, cv::THRESH_BINARY);
+	// Apply threshold to obtain the motion mask
+	cv::threshold(frameDiff, motionMask, motionThreshold, 255, cv::THRESH_BINARY);
 
-    // Apply morphological operations to remove noise
-    cv::erode(motionMask, motionMask, cv::Mat());
-    cv::dilate(motionMask, motionMask, cv::Mat());
+	// Apply morphological operations to remove noise
+	cv::erode(motionMask, motionMask, cv::Mat());
+	cv::dilate(motionMask, motionMask, cv::Mat());
 
-    // Find contours of the motion areas
-    std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(motionMask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    
-    detectionPoints.clear();
-    for (const auto& contour : contours)
-    {
-        cv::Rect rectangle = cv::boundingRect(contour);
-        auto point = cv::Point(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-        detectionPoints.push_back(point);
-    }
+	// Find contours of the motion areas
+	std::vector<std::vector<cv::Point>> contours;
+	cv::findContours(motionMask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-    previousFrame = frame.clone();
+	detectionPoints.clear();
+	for (const auto& contour : contours)
+	{
+		cv::Rect rectangle = cv::boundingRect(contour);
+		auto point = cv::Point(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+		detectionPoints.push_back(point);
+	}
+
+	previousFrame = frame.clone();
 
 }
 
 void Webcam::cutPerson(cv::Mat& frame, cv::Mat& result) {
-    cv::Mat hsv;
-    cv::cvtColor(frame, hsv, cv::COLOR_BGR2HSV);
+	cv::Mat hsv;
+	cv::cvtColor(frame, hsv, cv::COLOR_BGR2HSV);
 
-    // Define the range of green color in HSV
-    cv::Scalar lower_green(35, 50, 50);
-    cv::Scalar upper_green(85, 255, 255);
+	// Define the range of green color in HSV
+	cv::Scalar lower_green(35, 50, 50);
+	cv::Scalar upper_green(85, 255, 255);
 
-    // Create a binary mask by thresholding the image
-    cv::Mat mask;
-    cv::inRange(hsv, lower_green, upper_green, mask);
+	// Create a binary mask by thresholding the image
+	cv::Mat mask;
+	cv::inRange(hsv, lower_green, upper_green, mask);
 
-    bitwise_not(mask, mask);
+	bitwise_not(mask, mask);
 
-    // Splitting channels of the colored image
-    std::vector<cv::Mat> channels;
-    cv::split(frame, channels);
-    cv::Mat b = channels[0];
-    cv::Mat g = channels[1];
-    cv::Mat r = channels[2];
+	// Splitting channels of the colored image
+	std::vector<cv::Mat> channels;
+	cv::split(frame, channels);
+	cv::Mat b = channels[0];
+	cv::Mat g = channels[1];
+	cv::Mat r = channels[2];
 
-    // Making list of Red, Green, Blue Channels and alpha
-    std::vector<cv::Mat> rgba = { b, g, r, mask };
+	// Making list of Red, Green, Blue Channels and alpha
+	std::vector<cv::Mat> rgba = { b, g, r, mask };
 
-    // Merge rgba into a colored/multi-channeled image
-    cv::merge(rgba, result);
+	// Merge rgba into a colored/multi-channeled image
+	cv::merge(rgba, result);
 
-    result = makeTransparent(result);
+	result = makeTransparent(result);
 }
 
 cv::Mat Webcam::makeTransparent(cv::Mat& image) {
-    cv::Mat result;
-    image.convertTo(result, CV_32FC4);  // Convert to float type
+	cv::Mat result;
+	image.convertTo(result, CV_32FC4);  // Convert to float type
 
-    std::vector<cv::Mat> channels;
-    cv::split(result, channels);
-    cv::Mat alpha = channels[3];
+	std::vector<cv::Mat> channels;
+	cv::split(result, channels);
+	cv::Mat alpha = channels[3];
 
-    alpha *= 0.7;  // Reduce alpha values by 50%
+	alpha *= 0.7;  // Reduce alpha values by 50%
 
-    cv::merge(channels, result);
-    result.convertTo(result, CV_8UC4);  // Convert back to 8-bit type
+	cv::merge(channels, result);
+	result.convertTo(result, CV_8UC4);  // Convert back to 8-bit type
 
-    return result;
+	return result;
 }

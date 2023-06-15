@@ -12,6 +12,7 @@
 
 class VideoCapture;
 class Texture;
+class RayCast;
 
 class Webcam {
 public:
@@ -19,15 +20,22 @@ public:
 	~Webcam();
 
 	Texture* getWebcamFrame();
+
+	std::list<glm::vec3>* getCoordinates();
+	void drawANeef();
 protected:
 	Texture* texture;
+	RayCast* rayCast;
 	std::vector<tigl::Vertex> verts;
+
+	std::list<glm::vec3> coordinates;
 	std::list<cv::Point> detectionPoints;
 	std::list<cv::Point> resizedDetectionPoints;
 
-	cv::VideoCapture capture;
+
+	cv::VideoCapture *capture;
 	cv::Mat previousFrame;
-	int motionThreshold = 40;
+	int motionThreshold = 80;
 
 	GLFWwindow* window;
 
@@ -37,6 +45,5 @@ protected:
 	void findMovement(cv::Mat& frame);
 	std::vector<unsigned char> matToBytes(cv::Mat image);
 	cv::Mat makeTransparent(cv::Mat& image);
-	
-
+	cv::Point getResolution();
 };

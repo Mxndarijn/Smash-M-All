@@ -13,7 +13,7 @@
 #define GUI_HEIGHT 400
 #define GUI_WIDTH 400
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) }; // , 
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180) }; // , Spawnpoint(glm::vec3(-170, 110, 150), 270) }; // , 
 GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy) :
 drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy)
 {
@@ -119,7 +119,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     {
         // Actie wanneer er op de knop wordt geklikt
         std::cout << "De knop is geklikt!" << std::endl;
-        auto i = Spawnpoints[rand() % 1];
+        auto i = Spawnpoints[rand() % 2];
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawEndGUI = false;
     }

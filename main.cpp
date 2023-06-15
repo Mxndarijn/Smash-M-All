@@ -27,6 +27,8 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
 
+#include "RayCast.h"
+
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 #define OFFSET 75
 
@@ -38,6 +40,8 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 GUIManager* guiManager;
+
+Webcam* webcam;
 std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
@@ -141,7 +145,9 @@ void init()
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
 
-    auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
+    webcam = new Webcam(window);
+
+    auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "webcam");
     camera->addComponent(hudComponent);
 
     auto gameWorld = std::make_shared<GameObject>();
@@ -168,6 +174,13 @@ void update()
     {
         object->update(deltaTime);
     }
+
+    for (auto& vec : *webcam->getCoordinates()) {
+        vec.x -= camera->position.x;
+        vec.y += camera->position.y;
+        vec.z -= camera->position.z;
+    }
+
     //debugCamera->update(window);
     if (!spawnEnemies) return;
 
@@ -210,13 +223,15 @@ void draw()
 
     glPointSize(10.0f);
 
+    webcam->drawANeef();
+
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     for (auto& o : objects)
     {
         o->draw();
     }
-
+    
     camera->draw();
 }
 
