@@ -147,7 +147,7 @@ void init()
     auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
     camera->addComponent(hudComponent);
 
-    gameManager = new GameManager(objects, models);
+    gameManager = new GameManager(objects, models, camera);
     gameManager->init();
 
     enableLight(true);
@@ -171,11 +171,6 @@ void update()
     gameManager->update();
 
     //debugCamera->update(window);
-    if (!spawnEnemies) return;
-
-    gameManager->spawnEnemy(camera);
-
-    spawnEnemies = false;
 }
 
 void draw()
