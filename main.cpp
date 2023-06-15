@@ -145,6 +145,7 @@ void init()
     
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
+    //camera->addComponent(std::make_shared<PlayerComponent>());
 
     webcam = new Webcam(window);
     auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "webcam");
@@ -208,7 +209,7 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
+    projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 250.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 

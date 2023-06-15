@@ -2,6 +2,7 @@
 #include "DrawComponent.h"
 #include "glm/glm.hpp"
 #include <list>
+#include <tuple>
 class RayCastComponent : public DrawComponent {
 public:
 	RayCastComponent(glm::vec2 webcamResolution, glm::mat4* projection, std::list<glm::vec2>* points);
@@ -13,9 +14,9 @@ protected:
 	glm::vec2 webcamResolution;
 	glm::vec2 opticalCenter;
 	std::list<glm::vec2>* points;
-	std::list<glm::vec3> lines;
+	std::list<std::tuple<glm::vec3, glm::vec3>> lines;
 
 	glm::mat4* projectionMat;
 protected:
-	glm::vec3 pointToVec3(glm::vec2 point);
+	std::tuple<glm::vec3, glm::vec3>pointToVec3(glm::vec2 point);
 };
