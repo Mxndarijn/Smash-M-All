@@ -42,11 +42,10 @@ std::vector<ObjModel*> models;
 double lastFrameTime = 0;
 bool drawGui = true;
 bool drawEndScreen = false;
+bool turning = false;
 int volume = 100;
-
 int spawnPointIndex = 0;
 bool cameraMoving = false;
-bool spawnEnemies = false;
 
 void init();
 void update();
@@ -108,7 +107,6 @@ int main(void)
     return 0;
 }
 
-bool turning = false;
 
 void init()
 {
@@ -133,7 +131,12 @@ void init()
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
     // TODO: Guus moet Bullet Bill uploaden.
 
-    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &spawnEnemies);
+
+
+    gameManager = new GameManager(objects, models, camera);
+    gameManager->init();
+
+    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &gameManager->enableEnemySpawn);
 
     guiManager->init(window);
     //debugCamera = new Camera(window);
@@ -146,9 +149,6 @@ void init()
 
     auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
     camera->addComponent(hudComponent);
-
-    gameManager = new GameManager(objects, models, camera);
-    gameManager->init();
 
     enableLight(true);
     enableFog(true);
@@ -168,7 +168,7 @@ void update()
         object->update(deltaTime);
     }
 
-    gameManager->update();
+    gameManager->update(drawEndScreen);
 
     //debugCamera->update(window);
 }
