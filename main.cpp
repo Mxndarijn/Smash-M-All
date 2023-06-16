@@ -98,7 +98,7 @@ int main(void)
 
         if (drawGui)
         {
-            guiManager->renderGUI(camera);
+           // guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
@@ -231,7 +231,7 @@ void draw()
         o->draw();
     }
 
-    camera->getComponent<HUDComponent>()->draw();
+   //  camera->getComponent<HUDComponent>()->draw();
     camera->getComponent<RayCastComponent>()->draw();
 }
 

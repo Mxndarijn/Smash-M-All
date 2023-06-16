@@ -3,6 +3,8 @@
 #include "glm/glm.hpp"
 #include <list>
 #include <tuple>
+#include "GameObject.h"
+#include "CameraComponent.h"
 class RayCastComponent : public DrawComponent {
 public:
 	RayCastComponent(glm::vec2 webcamResolution, glm::mat4* projection, std::list<glm::vec2>* points);
