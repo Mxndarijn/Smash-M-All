@@ -12,6 +12,7 @@ public:
 
 	void update(float deltaTime) override;
 	void draw() override;
+
 protected:
 	glm::vec2 webcamResolution;
 	glm::vec2 opticalCenter;
@@ -22,3 +23,5 @@ protected:
 protected:
 	std::tuple<glm::vec3, glm::vec3>pointToVec3(glm::vec2 point);
 };
+
+extern glm::mat4 projectionMatrix;

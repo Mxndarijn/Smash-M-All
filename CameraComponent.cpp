@@ -55,6 +55,16 @@ glm::mat4 CameraComponent::getMatrix()
 	return ret;
 }
 
+glm::mat4 CameraComponent::getRealMatrix()
+{
+	glm::mat4 ret(1.0f);
+	ret = glm::rotate(ret, gameObject->rotation.x, glm::vec3(1, 0, 0));
+	ret = glm::rotate(ret, gameObject->rotation.y, glm::vec3(0, 1, 0));
+	ret = glm::rotate(ret, gameObject->rotation.z, glm::vec3(0, 0, 1));
+	ret = glm::translate(ret, gameObject->position);
+	return ret;
+}
+
 glm::vec3 CameraComponent::getForward() {
 	// De kijkrichting van de camera is de negatieve richting van de 'forward'-vector van de viewmatrix.
 	// Je kunt deze waarde aanpassen op basis van hoe je de kijkrichting in je camera-implementatie hebt opgeslagen.

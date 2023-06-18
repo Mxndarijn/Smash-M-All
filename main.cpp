@@ -8,6 +8,7 @@
 #include "RotateComponent.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include "RayCastComponent.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -26,7 +27,6 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
-#include "RayCastComponent.h"
 #include "Webcam.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
@@ -209,11 +209,11 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 250.0f);
+    projectionMatrix = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 250.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
-    tigl::shader->setProjectionMatrix(projection);
+    tigl::shader->setProjectionMatrix(projectionMatrix);
     tigl::shader->setViewMatrix(cameraComponent->getMatrix());
     //tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
