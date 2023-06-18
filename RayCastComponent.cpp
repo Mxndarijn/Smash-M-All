@@ -21,46 +21,28 @@ RayCastComponent::~RayCastComponent()
 
 void RayCastComponent::update(float deltaTime)
 {
-	/*if (points->empty()) 
+	if (points->empty()) 
 		return;
 	
 	for (auto& point : *points) {
 		lines.push_back(pointToVec3(point));
-	}*/
+	}
 }
 
 void RayCastComponent::draw()
 {
-	auto cameraComponent = gameObject->getComponent<CameraComponent>();
-
-	int viewPort[4];
-	glGetIntegerv(GL_VIEWPORT, viewPort);
-
-	int screenWidth = viewPort[2]; // Width of the viewport
-	int screenHeight = viewPort[3]; // Height of the viewport
-
-
-	// Calculate the center point of the screen
-	glm::vec2 screenCenter(screenWidth / 4.0f, screenHeight / 4.0f);
-	glm::vec2 screenCenter1(screenWidth / 4.0f + 5, screenHeight / 4.0f + 5);
-
-
-
-	glm::vec3 retNear = glm::unProject(glm::vec3(screenCenter, 0.f), cameraComponent->getMatrix(), projectionMatrix, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
-	glm::vec3 retFar = glm::unProject(glm::vec3(screenCenter1, 1.f), cameraComponent->getMatrix(), projectionMatrix, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
-
-	glPointSize(20.0f); // Stel de grootte van het punt in
-
 	glBegin(GL_LINES);
 	glEnable(GL_DEPTH_TEST);
+	glLineWidth(20.0f);
+	for (auto& line : lines) {
+		glm::vec3 near = std::get<0>(line);
+		glm::vec3 far = std::get<1>(line);
+		glVertex3f(near.x, near.y, near.z);
+		glVertex3f(far.x, far.y, far.z);
+	}
+	glEnd();
 
-	glVertex3f(retNear.x, retNear.y, retNear.z); // Teken het punt met de opgegeven coördinaten
-	glVertex3f(retFar.x, retFar.y, retFar.z); // Teken het punt met de opgegeven coördinaten
-	//glVertex3f(-far.x, far.y, far.z); // Teken het punt met de opgegeven coördinaten
-
-	glEnd(); // Eindig met het tekenen van punten
-
-
+	lines.clear();
 
 }
 
@@ -71,8 +53,11 @@ std::tuple<glm::vec3, glm::vec3> RayCastComponent::pointToVec3(glm::vec2 point)
 
 	int viewPort[4];
 	glGetIntegerv(GL_VIEWPORT, viewPort);
-	glm::vec3 retNear = glm::unProject(glm::vec3(point, 0.0f), cameraComponent->getMatrix(), *projectionMat, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
-	glm::vec3 retFar = glm::unProject(glm::vec3(point, 1.0f), cameraComponent->getMatrix(), *projectionMat, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
+	//std::cout << "Point: " << point.x << " " << point.y << std::endl;
+
+	auto testPoint = glm::vec2(5, 5) + point;
+	glm::vec3 retNear = glm::unProject(glm::vec3(point, 0.0f), cameraComponent->getMatrix(), projectionMatrix, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
+	glm::vec3 retFar = glm::unProject(glm::vec3(testPoint, 1.0f), cameraComponent->getMatrix(), projectionMatrix, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
 
 	return std::make_tuple(retNear, retFar);
 }

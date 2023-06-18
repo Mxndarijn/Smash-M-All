@@ -32,7 +32,7 @@ Texture* Webcam::getWebcamFrame()
     
     for (auto& point : detectionPoints) {
         //Debugging
-        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 255), -1);
+        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
         //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
         // replacing the points according to screen size
         int pointX = ((double) point.x / imageWidth) * screenWidth;
