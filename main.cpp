@@ -28,6 +28,8 @@
 #include "PlayerComponent.h"
 #include "Webcam.h"
 #include "GameManager.h"
+#include "stb_image.h"
+
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 using tigl::Vertex;
@@ -58,6 +60,7 @@ void enableFog(bool state);
 void renderEndGUI();
 void renderGUI();
 void setColorGui();
+void setWindowIcon(GLFWwindow* window, const char* filename);
 
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
@@ -115,6 +118,9 @@ int main(void)
 
 void init()
 {
+    // Set the icon of the window
+    setWindowIcon(window, "resources/icon/icon.png");
+
     // Initialising of soundEngine
     soundEngine = irrklang::createIrrKlangDevice();
     soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
@@ -218,6 +224,25 @@ void draw()
 
     camera->getComponent<RayCastComponent>()->draw();
     camera->getComponent<HUDComponent>()->draw();
+}
+
+void setWindowIcon(GLFWwindow* window, const char* filename) {
+    GLFWimage icon;
+    int width, height, numChannels;
+    unsigned char* imageData = stbi_load(filename, &width, &height, &numChannels, 0);
+    if (!imageData) {
+        std::cerr << "Failed to load image: " << filename << std::endl;
+        return;
+    }
+
+    icon.width = width;
+    icon.height = height;
+    icon.pixels = imageData;
+
+    glfwSetWindowIcon(window, 1, &icon);
+
+    // Free the image data
+    stbi_image_free(imageData);
 }
 
 void enableLight(bool state)
