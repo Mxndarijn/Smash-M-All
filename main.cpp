@@ -129,7 +129,7 @@ void init()
     models.push_back(new ObjModel("models/up/mario_1up.obj"));
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
-    // TODO: Guus moet Bullet Bill uploaden.
+    models.push_back(new ObjModel("models/bulletbill/Bullet_Bill_Mario.obj"));
 
 
 
