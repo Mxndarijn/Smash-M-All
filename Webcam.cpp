@@ -21,8 +21,10 @@ Texture* Webcam::getWebcamFrame()
     cv::Mat frame;
     cv::Mat result;
     *capture >> frame;
-    cutPerson(frame, result);
-    findMovement(frame);
+    cv::Mat flippedFrame;
+    cv::flip(frame, flippedFrame, 1);
+    cutPerson(flippedFrame, result);
+    findMovement(flippedFrame);
 
     int imageWidth = result.cols;
     int imageHeight = result.rows;

@@ -215,7 +215,7 @@ void draw()
 
     glPointSize(10.0f);
 
-    camera->getComponent<RayCastComponent>()->draw();
+    //camera->getComponent<RayCastComponent>()->draw();
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
