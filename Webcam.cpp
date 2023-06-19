@@ -32,8 +32,8 @@ Texture* Webcam::getWebcamFrame()
 
     int offsetX = 0;
     int offsetY = 0;
-    std::cout << "IWidth: " << imageWidth << " IHeight: " << imageHeight;
-    std::cout << "Width: " << screenWidth << " Height: " << screenHeight;
+    //std::cout << "IWidth: " << imageWidth << " IHeight: " << imageHeight;
+    //std::cout << "Width: " << screenWidth << " Height: " << screenHeight;
     
     for (auto& point : detectionPoints) {
         //Debugging

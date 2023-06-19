@@ -2,6 +2,8 @@
 #include <iostream>
 #include "MoveEnemyComponent.h"
 #include "ModelComponent.h"
+#include "BoundingBoxComponent.h"
+#include "RayCastComponent.h"
 int aliveEnemies = 0;
 int count = 2;
 
@@ -43,6 +45,7 @@ void GameManager::spawnEnemy()
 	enemy->rotation.y = -camera->rotation.y;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
 	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
+	enemy->addComponent(std::make_shared<BoundingBoxComponent>(glm::vec3(-1000, 0, -1000), glm::vec3(1000, 0, 1000)));
 	objects.push_back(enemy);
 	aliveEnemies++;
 }
@@ -54,6 +57,13 @@ int GameManager::getRandomEnemy() {
 
 void GameManager::update(bool& endscreen)
 {
+	auto lines = camera->getComponent<RayCastComponent>()->lines;
+
+	if (lines.empty())
+	{
+		return;
+	}
+
 	if (enableEnemySpawn) {
 		std::cout << "Spawn enemy, count: " << count << "timer is running : " << (spawnTimer->started ? "True" : "False") << std::endl;
 		spawnEnemy();
@@ -69,6 +79,24 @@ void GameManager::update(bool& endscreen)
 	}
 	if (count <= 0 && aliveEnemies <= 0)
 		endscreen = true;
+	
+	for (const auto& object : objects)
+	{
+		auto boundingBox = object->getComponent<BoundingBoxComponent>();
+
+		if (boundingBox != nullptr)
+		{
+			for (const auto& line : lines)
+			{
+				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)))
+				{
+					std::cout << "Found collision removing object\n";
+					object->isDead = true;
+				}
+			}
+		}
+	}
+	camera->getComponent<RayCastComponent>()->lines.clear();
 }
 
 glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {

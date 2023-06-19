@@ -41,9 +41,6 @@ void RayCastComponent::draw()
 		glVertex3f(far.x, far.y, far.z);
 	}
 	glEnd();
-
-	lines.clear();
-
 }
 
 

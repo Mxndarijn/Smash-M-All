@@ -2,37 +2,38 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <array>
 #include <algorithm>
+#include "RayCastComponent.h"
 
-BoundingBoxComponent::BoundingBoxComponent() {
+BoundingBoxComponent::BoundingBoxComponent() 
+{
 
 }
 
 BoundingBoxComponent::BoundingBoxComponent(glm::vec3 min, glm::vec3 max) : min(min), max(max), lengths(min - max)
 {
+
 }
 
 BoundingBoxComponent::~BoundingBoxComponent()
 {
+
 }
 
-bool BoundingBoxComponent::collide(glm::vec3 collisionPoint)
+bool BoundingBoxComponent::collide(glm::vec3 near, glm::vec3 far)
 {
-	auto cubeCorner1 = gameObject->position + min;
-	auto cubeCorner2 = gameObject->position + max;
-
-	auto corners = getCorners(-cubeCorner1, -cubeCorner2);
-
 	for (int i = 0; i < corners.size(); i++) {
-		if (isColliding(corners[i], collisionPoint)) {
+		if (isColliding(corners[i], near, far)) {
 			return true;
 		}
 	}
 	return false;
 }
 
-bool BoundingBoxComponent::isColliding(glm::vec3 position, glm::vec3 collisionPoint) {
-	glm::vec3 maxCorner = position + lengths;
-	return glm::all(glm::greaterThanEqual(collisionPoint, position)) && glm::all(glm::lessThanEqual(collisionPoint, maxCorner));
+bool BoundingBoxComponent::isColliding(glm::vec3 position, glm::vec3 near, glm::vec3 far) {
+	glm::vec3 minimal = glm::min(near, far);
+	glm::vec3 maximal = glm::max(near, far);
+
+	return glm::all(glm::greaterThanEqual(position, minimal)) && glm::all(glm::lessThanEqual(position, maximal));
 }
 
 std::array<glm::vec3, 4> BoundingBoxComponent::getCorners(glm::vec3 minCorner, glm::vec3 maxCorner)
@@ -52,4 +53,8 @@ std::array<glm::vec3, 4> BoundingBoxComponent::getCorners(glm::vec3 minCorner, g
 
 void BoundingBoxComponent::update(float deltaTime)
 {
+	auto cornerTopLeft = gameObject->position + min;
+	auto cornerBottomRight = gameObject->position + max;
+
+	corners = getCorners(-cornerTopLeft, -cornerBottomRight);
 }

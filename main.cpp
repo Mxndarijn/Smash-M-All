@@ -96,7 +96,7 @@ int main(void)
 
         if (drawGui)
         {
-           // guiManager->renderGUI(camera);
+           guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
