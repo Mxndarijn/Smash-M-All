@@ -99,12 +99,12 @@ int main(void)
 
         if (drawGui)
         {
-           // guiManager->renderGUI(camera);
+            guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
             guiManager->renderEndGUI(window, camera, gameManager->score);
-        }
+        }   
 
         glfwSwapBuffers(window);
 

@@ -37,21 +37,4 @@ void MoveEnemyComponent::update(float elapsedTime)
 
     gameObject->position = newPos;
 
-    if (gameObject->position.x >= target.x - 10.0f && gameObject->position.z >= target.z - 10.0f && direction.x >= 0  && direction.z >= 0 )
-    {
-        gameObject->isDead = true;
-    }
-    if (gameObject->position.x <= target.x + 10.0f && gameObject->position.z <= target.z + 10.0f && direction.x <= 0 && direction.z <= 0)
-    {
-        gameObject->isDead = true;
-    }
-    if (gameObject->position.x >= target.x - 10.0f && gameObject->position.z <= target.z + 10.0f && direction.x >= 0 && direction.z <= 0)
-    {
-        gameObject->isDead = true;
-    }
-    if (gameObject->position.x <= target.x + 10.0f && gameObject->position.z >= target.z - 10.0f && direction.x <= 0 && direction.z >= 0)
-    {
-        gameObject->isDead = true;
-    }
-
 }

@@ -10,7 +10,7 @@ auto removeDead = [](std::shared_ptr<GameObject> object)
 	if (object->isDead)
 	{
 		aliveEnemies--;
-		std::cout << "Removing enemies\nAlive enemies" << aliveEnemies << std::endl;;
+		std::cout << "Removing enemies\nAlive enemies: " << aliveEnemies << std::endl;;
 		return true;
 	}
 	return false;
@@ -47,15 +47,9 @@ void GameManager::spawnEnemy()
 	aliveEnemies++;
 }
 
-int GameManager::getRandomEnemy() {
-	int listSize = models.size();
-	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
-}
-
 void GameManager::update(bool& endscreen)
 {
 	if (enableEnemySpawn) {
-		std::cout << "Spawn enemy, count: " << count << "timer is running : " << (spawnTimer->started ? "True" : "False") << std::endl;
 		spawnEnemy();
 		enableEnemySpawn = false;
 		count--;
@@ -67,13 +61,49 @@ void GameManager::update(bool& endscreen)
 			spawnTimer->started = false;
 		}
 	}
-	if (count <= 0 && aliveEnemies <= 0)
-		endscreen = true;
+	//if (count <= 0 && aliveEnemies <= 0)
+	//	endscreen = true;
+
+	for (const auto& enemy : objects)
+	{
+		if (!enemy->isDead)
+		{
+			auto target = glm::vec3(-camera->position.x, camera->position.y, -camera->position.z);
+			glm::vec3 direction = glm::normalize(target - enemy->position);
+			if (enemy->position.x >= target.x - 10.0f && enemy->position.z >= target.z - 10.0f && direction.x >= 0 && direction.z >= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+			if (enemy->position.x <= target.x + 10.0f && enemy->position.z <= target.z + 10.0f && direction.x <= 0 && direction.z <= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+			if (enemy->position.x >= target.x - 10.0f && enemy->position.z <= target.z + 10.0f && direction.x >= 0 && direction.z <= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+			if (enemy->position.x <= target.x + 10.0f && enemy->position.z >= target.z - 10.0f && direction.x <= 0 && direction.z >= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+		}
+
+		if (lives <= 0)
+			endscreen = true;
+	}
+}
+
+int GameManager::getRandomEnemy() {
+	int listSize = models.size();
+	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }
 
 glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {
 	glm::vec3 enemyPos;
-
 	int random = rand() % 2;
 
 	if (random == 0)
