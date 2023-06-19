@@ -231,8 +231,8 @@ void draw()
         o->draw();
     }
 
-    camera->getComponent<HUDComponent>()->draw();
     camera->getComponent<RayCastComponent>()->draw();
+    camera->getComponent<HUDComponent>()->draw();
 }
 
 void enableLight(bool state)

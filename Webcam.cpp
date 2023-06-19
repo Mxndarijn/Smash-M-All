@@ -29,6 +29,11 @@ Texture* Webcam::getWebcamFrame()
 
     int screenWidth, screenHeight;
     glfwGetWindowSize(window, &screenWidth, &screenHeight);
+
+    int offsetX = 0;
+    int offsetY = 0;
+    std::cout << "IWidth: " << imageWidth << " IHeight: " << imageHeight;
+    std::cout << "Width: " << screenWidth << " Height: " << screenHeight;
     
     for (auto& point : detectionPoints) {
         //Debugging
@@ -36,11 +41,22 @@ Texture* Webcam::getWebcamFrame()
         //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
         // replacing the points according to screen size
         int pointX = ((double) point.x / imageWidth) * screenWidth;
-        int pointY = ((double) point.y / imageHeight) * screenHeight;
+        int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
         glm::vec2 realPoint = glm::vec2(pointX, pointY);
         // std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
         resizedDetectionPoints.push_back(realPoint);
     }
+    auto point = cv::Point(400, 400);
+    cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
+
+    int pointX = ((double) point.x / imageWidth) * screenWidth;
+    int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
+
+    resizedDetectionPoints.push_back(glm::vec2(pointX, pointY));
+
+
+
+
     texture = new Texture(result);
     return texture;
 }
