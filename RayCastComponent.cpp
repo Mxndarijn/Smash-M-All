@@ -41,8 +41,8 @@ void RayCastComponent::draw()
 
 
 	// Calculate the center point of the screen
-	glm::vec2 screenCenter(screenWidth / 4.0f, screenHeight / 4.0f);
-	glm::vec2 screenCenter1(screenWidth / 4.0f + 5, screenHeight / 4.0f + 5);
+	glm::vec2 screenCenter(screenWidth / 2.0f, screenHeight / 2.0f);
+	glm::vec2 screenCenter1(screenWidth / 2.0f + 5, screenHeight / 2.0f + 5);
 
 
 
