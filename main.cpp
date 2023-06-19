@@ -8,6 +8,7 @@
 #include "RotateComponent.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include "RayCastComponent.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -19,18 +20,16 @@
 #include <random>
 
 #include "GUIManager.h"
-#include "MoveEnemyComponent.h"
 #include "Spawnpoint.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
+#include "Webcam.h"
 #include "GameManager.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
-#define OFFSET 75
-
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -40,22 +39,22 @@ using tigl::Vertex;
 GLFWwindow* window;
 GUIManager* guiManager;
 GameManager* gameManager;
+Webcam* webcam;
 std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
 bool drawGui = true;
 bool drawEndScreen = false;
-int score = 0;
+bool turning = false;
 int volume = 100;
-
 int spawnPointIndex = 0;
 bool cameraMoving = false;
-bool spawnEnemies = false;
 
 void init();
 void update();
 void draw();
 void enableLight(bool state);
+void enableFog(bool state);
 void renderEndGUI();
 void renderGUI();
 void setColorGui();
@@ -65,6 +64,8 @@ std::shared_ptr<GameObject> camera;
 irrklang::ISoundEngine* soundEngine;
 
 Camera* debugCamera;
+
+glm::mat4 projection;
 
 // Callback for screen resizer
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -76,7 +77,7 @@ int main(void)
 {
     if (!glfwInit())
         throw "Could not initialize glwf";
-    window = glfwCreateWindow(1400, 800, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1400, 800, "Smash \'m all", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -95,11 +96,11 @@ int main(void)
 
         if (drawGui)
         {
-            guiManager->renderGUI(camera);
+           // guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
-            guiManager->renderEndGUI(window, camera, score);
+            guiManager->renderEndGUI(window, camera, gameManager->score);
         }
 
         glfwSwapBuffers(window);
@@ -111,7 +112,6 @@ int main(void)
     return 0;
 }
 
-bool turning = false;
 
 void init()
 {
@@ -131,10 +131,17 @@ void init()
         });
 
     models.push_back(new ObjModel("models/world/world.obj"));
+    models.push_back(new ObjModel("models/up/mario_1up.obj"));
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
+    models.push_back(new ObjModel("models/bulletbill/Bullet_Bill_Mario.obj"));
 
-    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &spawnEnemies);
+
+
+    gameManager = new GameManager(objects, models, camera);
+    gameManager->init();
+
+    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &gameManager->enableEnemySpawn);
 
     guiManager->init(window);
     //debugCamera = new Camera(window);
@@ -144,22 +151,21 @@ void init()
     
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
+    //camera->addComponent(std::make_shared<PlayerComponent>());
 
-    auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
+    webcam = new Webcam(window);
+    auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "webcam");
     camera->addComponent(hudComponent);
 
-    auto gameWorld = std::make_shared<GameObject>();
-    gameWorld->position = glm::vec3(0, 0 ,0);
-    gameWorld->addComponent(std::make_shared<ModelComponent>(models[0]));
-    objects.push_back(gameWorld);
-    
-    auto goomba = std::make_shared<GameObject>();
-    goomba->position = glm::vec3(50, 0, 50);
-    goomba->addComponent(std::make_shared<ModelComponent>(models[1]));
-
-    gameManager = new GameManager(objects);
+    auto rayCastComponent = std::make_shared<RayCastComponent>(
+        webcam->getResolution(),
+        &projection,
+        webcam->getPoints()
+    );
+    camera->addComponent(rayCastComponent);
 
     enableLight(true);
+    enableFog(true);
     irrklang::ISound* sound = soundEngine->play2D(soundSource, false, false, true);
 }
 
@@ -168,6 +174,7 @@ void update()
     double frameTime = glfwGetTime();
     float deltaTime = frameTime - lastFrameTime;
     lastFrameTime = frameTime;
+
     camera->update(deltaTime);
 
     for (const auto& object : objects)
@@ -175,24 +182,9 @@ void update()
         object->update(deltaTime);
     }
 
-    //debugCamera->update(window);
-    if (!spawnEnemies) return;
+    gameManager->update(drawEndScreen);
 
-    auto goomba = std::make_shared<GameObject>();
-    goomba->position = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * OFFSET)), camera->position.y, -(camera->position.z + (cos(camera->rotation.y) * OFFSET)));
-    if((camera->rotation.y <= 100 && camera->rotation.y > 80) || camera->rotation.y > 230)
-    {
-        goomba->rotation.y = camera->rotation.y + glm::radians(180.f);
-    }
-	else
-	{
-        goomba->rotation.y = -camera->rotation.y;
-	}
-    
-    goomba->addComponent(std::make_shared<ModelComponent>(models[2]));
-    goomba->addComponent(std::make_shared<MoveEnemyComponent>(camera));
-    objects.push_back(goomba);
-    spawnEnemies = false;
+    //debugCamera->update(window);
 }
 
 void draw()
@@ -202,11 +194,11 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
+    projectionMatrix = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 250.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
-    tigl::shader->setProjectionMatrix(projection);
+    tigl::shader->setProjectionMatrix(projectionMatrix);
     tigl::shader->setViewMatrix(cameraComponent->getMatrix());
     //tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
@@ -224,7 +216,8 @@ void draw()
         o->draw();
     }
 
-    camera->draw();
+    camera->getComponent<RayCastComponent>()->draw();
+    camera->getComponent<HUDComponent>()->draw();
 }
 
 void enableLight(bool state)
@@ -241,5 +234,18 @@ void enableLight(bool state)
     }
     else {
         tigl::shader->enableLighting(false);
+    }
+}
+
+void enableFog(bool state)
+{
+    if (state) {
+        tigl::shader->enableFog(true);
+        tigl::shader->setFogLinear(1, 4);
+        tigl::shader->setFogColor(glm::vec3(186.f / 255, 174.f / 255, 145.f / 255));
+        tigl::shader->setFogExp(.0025f);
+    }
+    else {
+        tigl::shader->enableFog(false);
     }
 }

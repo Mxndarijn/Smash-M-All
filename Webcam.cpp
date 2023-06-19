@@ -5,18 +5,22 @@
 
 Webcam::Webcam(GLFWwindow* window) : window(window)
 {
-    capture = cv::VideoCapture(0);
+    capture = new cv::VideoCapture(0);
 }
 
 Webcam::~Webcam()
 {
+    delete capture;
 }
 
 Texture* Webcam::getWebcamFrame()
 {
+    detectionPoints.clear();
+    resizedDetectionPoints.clear();
+
     cv::Mat frame;
     cv::Mat result;
-    capture >> frame;
+    *capture >> frame;
     cutPerson(frame, result);
     findMovement(frame);
 
@@ -25,20 +29,47 @@ Texture* Webcam::getWebcamFrame()
 
     int screenWidth, screenHeight;
     glfwGetWindowSize(window, &screenWidth, &screenHeight);
+
+    int offsetX = 0;
+    int offsetY = 0;
+    std::cout << "IWidth: " << imageWidth << " IHeight: " << imageHeight;
+    std::cout << "Width: " << screenWidth << " Height: " << screenHeight;
     
     for (auto& point : detectionPoints) {
         //Debugging
-        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 255), -1);
+        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
         //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
         // replacing the points according to screen size
         int pointX = ((double) point.x / imageWidth) * screenWidth;
-        int pointY = ((double) point.y / imageHeight) * screenHeight;
-        cv::Point realPoint = cv::Point(pointX, pointY);
+        int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
+        glm::vec2 realPoint = glm::vec2(pointX, pointY);
         // std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
         resizedDetectionPoints.push_back(realPoint);
     }
+    auto point = cv::Point(400, 400);
+    cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
+
+    int pointX = ((double) point.x / imageWidth) * screenWidth;
+    int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
+
+    resizedDetectionPoints.push_back(glm::vec2(pointX, pointY));
+
+
+
+
     texture = new Texture(result);
     return texture;
+}
+
+glm::vec2 Webcam::getResolution()
+{
+    if (capture) {
+        unsigned width = static_cast<int>(capture->get(cv::CAP_PROP_FRAME_WIDTH));
+        unsigned height = static_cast<int>(capture->get(cv::CAP_PROP_FRAME_HEIGHT));
+
+        return glm::vec2(width, height);
+    }
+    return glm::vec2(-1, -1);
 }
 
 std::vector<unsigned char> Webcam::matToBytes(cv::Mat image) {
