@@ -82,13 +82,14 @@ void GameManager::update(bool& endscreen)
 				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)))
 				{
 					std::cout << "Found collision removing object\n";
+					score++;
 					object->isDead = true;
 				}
 			}
 		}
 	}
-	//if (count <= 0 && aliveEnemies <= 0)
-	//	endscreen = true;
+	if (count <= 0 && aliveEnemies <= 0)
+		endscreen = true;
 
 	for (const auto& enemy : objects)
 	{
