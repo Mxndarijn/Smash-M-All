@@ -30,29 +30,23 @@ Texture* Webcam::getWebcamFrame()
     int screenWidth, screenHeight;
     glfwGetWindowSize(window, &screenWidth, &screenHeight);
 
-    int offsetX = 0;
-    int offsetY = 0;
-    std::cout << "IWidth: " << imageWidth << " IHeight: " << imageHeight;
-    std::cout << "Width: " << screenWidth << " Height: " << screenHeight;
-    
+
+    cv::rectangle(result, cv::Rect(0,0, imageWidth, imageHeight), cv::Scalar(0,0,255,255), 1);
     for (auto& point : detectionPoints) {
         //Debugging
-        cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
-        //std::cout << "Test: " << point.x << " , " << point.y << std::endl;
-        // replacing the points according to screen size
+        cv::circle(result, point, 5, cv::Scalar(0, 0, 10, 15), -1);
         int pointX = ((double) point.x / imageWidth) * screenWidth;
         int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
         glm::vec2 realPoint = glm::vec2(pointX, pointY);
-        // std::cout << "realPoint: (" << realPoint.x << "," << realPoint.y << ")\n";
         resizedDetectionPoints.push_back(realPoint);
     }
-    auto point = cv::Point(400, 400);
+    /*auto point = cv::Point(400, 400);
     cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
 
     int pointX = ((double) point.x / imageWidth) * screenWidth;
-    int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
+    int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;*/
 
-    resizedDetectionPoints.push_back(glm::vec2(pointX, pointY));
+    //resizedDetectionPoints.push_back(glm::vec2(pointX, pointY));
 
 
 
