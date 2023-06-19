@@ -95,17 +95,17 @@ void BoundingBoxComponent::update(float deltaTime)
 	auto cornerTopLeft = gameObject->position + min;
 	auto cornerBottomRight = gameObject->position + max;
 
-	corners = getCorners(-cornerTopLeft, -cornerBottomRight);
+	corners = getCorners(cornerTopLeft, cornerBottomRight);
 }
 
 
 void BoundingBoxComponent::draw()
 {
-    std::cout << "draw bound" << std::endl;
     glBegin(GL_LINES);
+    glEnable(GL_DEPTH_TEST);
 
-    auto minCorner = corners[0];
-    auto maxCorner = corners[1];
+    auto minCorner = min;
+    auto maxCorner = max;
     // Get the corners of the cube
     glm::vec3 corner1 = minCorner;
     glm::vec3 corner2 = glm::vec3(maxCorner.x, minCorner.y, minCorner.z);

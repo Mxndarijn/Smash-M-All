@@ -38,7 +38,6 @@ void RayCastComponent::draw()
 	//glColor4f(1.0f, 0.0f, 0.0f, 1.f);  // Red color
 
 	for (auto& line : lines) {
-		std::cout << "drawing line" << std::endl;
 		glm::vec3 near = std::get<0>(line);
 		glm::vec3 far = std::get<1>(line);
 		glVertex3f(near.x, near.y, near.z);

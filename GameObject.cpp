@@ -38,7 +38,8 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 	modelMatrix = glm::scale(modelMatrix, scale);
 
 	tigl::shader->setModelMatrix(modelMatrix);
-	drawComponent->draw();
+
+    drawComponent->draw();
 
     auto boundingBox = getComponent <BoundingBoxComponent>();
     if (boundingBox) {
