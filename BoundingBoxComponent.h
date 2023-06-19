@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include <memory>
 #include <array>
-class BoundingBoxComponent : public Component 
+class BoundingBoxComponent : public DrawComponent 
 {
 public:
 	BoundingBoxComponent();
@@ -12,6 +12,7 @@ public:
 	~BoundingBoxComponent();
 
 	void update(float deltaTime) override;
+	void draw() override;
 	bool collide(glm::vec3 near, glm::vec3 far);
 
 	glm::vec3 min;

@@ -3,8 +3,9 @@
 #include <array>
 #include <algorithm>
 #include "RayCastComponent.h"
+#include "tigl.h"
 
-BoundingBoxComponent::BoundingBoxComponent() 
+BoundingBoxComponent::BoundingBoxComponent()
 {
 
 }
@@ -57,4 +58,12 @@ void BoundingBoxComponent::update(float deltaTime)
 	auto cornerBottomRight = gameObject->position + max;
 
 	corners = getCorners(-cornerTopLeft, -cornerBottomRight);
+}
+
+void BoundingBoxComponent::draw()
+{
+	tigl::begin(GL_QUADS);
+	for (int i = 0; i < 4; i++)
+		tigl::addVertex(tigl::Vertex::P(corners[i]));
+	tigl::end();
 }

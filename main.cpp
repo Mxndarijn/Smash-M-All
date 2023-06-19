@@ -28,6 +28,7 @@
 #include "PlayerComponent.h"
 #include "Webcam.h"
 #include "GameManager.h"
+#include "BoundingBoxComponent.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
 using tigl::Vertex;
@@ -209,10 +210,14 @@ void draw()
 
     glPointSize(10.0f);
 
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     for (auto& o : objects)
     {
+        if (o->getComponent<BoundingBoxComponent>() != nullptr)
+        {
+            o->getComponent<BoundingBoxComponent>()->draw();
+        }
         o->draw();
     }
 
