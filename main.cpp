@@ -8,6 +8,7 @@
 #include "RotateComponent.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include "RayCastComponent.h"
 
 #include <irrKlang.h>
 #pragma comment(lib, "irrKlang.lib")
@@ -25,6 +26,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "PlayerComponent.h"
+#include "Webcam.h"
 #include "GameManager.h"
 
 #define CAMERA_SPAWN glm::vec3(-5.0f, 60.0f, -20.0f);
@@ -37,6 +39,7 @@ using tigl::Vertex;
 GLFWwindow* window;
 GUIManager* guiManager;
 GameManager* gameManager;
+Webcam* webcam;
 std::vector<ObjModel*> models;
 
 double lastFrameTime = 0;
@@ -61,6 +64,8 @@ std::shared_ptr<GameObject> camera;
 irrklang::ISoundEngine* soundEngine;
 
 Camera* debugCamera;
+
+glm::mat4 projection;
 
 // Callback for screen resizer
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -91,7 +96,7 @@ int main(void)
 
         if (drawGui)
         {
-            guiManager->renderGUI(camera);
+           // guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
@@ -146,9 +151,18 @@ void init()
     
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
+    //camera->addComponent(std::make_shared<PlayerComponent>());
 
-    auto hudComponent = std::make_shared<HUDComponent>(window, "webcam");
+    webcam = new Webcam(window);
+    auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "webcam");
     camera->addComponent(hudComponent);
+
+    auto rayCastComponent = std::make_shared<RayCastComponent>(
+        webcam->getResolution(),
+        &projection,
+        webcam->getPoints()
+    );
+    camera->addComponent(rayCastComponent);
 
     enableLight(true);
     enableFog(true);
@@ -180,11 +194,11 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
+    projectionMatrix = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 250.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
-    tigl::shader->setProjectionMatrix(projection);
+    tigl::shader->setProjectionMatrix(projectionMatrix);
     tigl::shader->setViewMatrix(cameraComponent->getMatrix());
     //tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
@@ -202,7 +216,8 @@ void draw()
         o->draw();
     }
 
-    camera->draw();
+    camera->getComponent<RayCastComponent>()->draw();
+    camera->getComponent<HUDComponent>()->draw();
 }
 
 void enableLight(bool state)

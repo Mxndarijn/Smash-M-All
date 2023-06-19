@@ -11,7 +11,8 @@ public:
 
 	void update(float elapsedTime) override;
 	glm::mat4 getMatrix();
-
+	glm::mat4 getRealMatrix();
+	glm::vec3 getForward();
 protected:
 	GLFWwindow* window;
 

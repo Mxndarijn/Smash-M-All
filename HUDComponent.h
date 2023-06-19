@@ -10,7 +10,7 @@ class Texture;
 class HUDComponent : public DrawComponent {
 	std::vector<tigl::Vertex> verts;
 public:
-	HUDComponent(GLFWwindow* window, std::string path = "resources/textures/test.png");
+	HUDComponent(GLFWwindow* window, Webcam* webcam = nullptr, std::string path = "resources/textures/test.png");
 	~HUDComponent();
 
 	void update(float deltaTime) override;
