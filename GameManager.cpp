@@ -96,7 +96,6 @@ void GameManager::update(bool& endscreen)
 			}
 		}
 	}
-	camera->getComponent<RayCastComponent>()->lines.clear();
 }
 
 glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {

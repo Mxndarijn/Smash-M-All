@@ -217,7 +217,9 @@ void draw()
     }
 
     camera->getComponent<RayCastComponent>()->draw();
-    camera->getComponent<HUDComponent>()->draw();
+    //camera->getComponent<HUDComponent>()->draw();
+
+    camera->getComponent<RayCastComponent>()->lines.clear();
 }
 
 void enableLight(bool state)
