@@ -99,7 +99,7 @@ int main(void)
 
         if (drawGui)
         {
-            guiManager->renderGUI(camera);
+           guiManager->renderGUI(camera);
         }
         if (drawEndScreen)
         {
@@ -215,6 +215,8 @@ void draw()
 
     glPointSize(10.0f);
 
+    camera->getComponent<RayCastComponent>()->draw();
+
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     for (auto& o : objects)
@@ -222,8 +224,9 @@ void draw()
         o->draw();
     }
 
-    camera->getComponent<RayCastComponent>()->draw();
     camera->getComponent<HUDComponent>()->draw();
+
+    camera->getComponent<RayCastComponent>()->lines.clear();
 }
 
 void setWindowIcon(GLFWwindow* window, const char* filename) {

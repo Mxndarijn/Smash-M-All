@@ -33,17 +33,19 @@ void RayCastComponent::draw()
 {
 	glBegin(GL_LINES);
 	glEnable(GL_DEPTH_TEST);
-	glLineWidth(20.0f);
+	
+	//tigl::shader->enableColor(true);
+	//glColor4f(1.0f, 0.0f, 0.0f, 1.f);  // Red color
+
 	for (auto& line : lines) {
 		glm::vec3 near = std::get<0>(line);
 		glm::vec3 far = std::get<1>(line);
 		glVertex3f(near.x, near.y, near.z);
 		glVertex3f(far.x, far.y, far.z);
 	}
+
+//	tigl::shader->enableColor(false);
 	glEnd();
-
-	lines.clear();
-
 }
 
 
