@@ -5,6 +5,9 @@
 #include "Texture.h"
 #include "GameObject.h"
 #include <iostream>
+#include "RayCastComponent.h"
+
+const bool color = false;
 
 HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
 {
@@ -20,15 +23,24 @@ HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
 	}
 
 	// size for hud
-	const float width = 0.3f * 1.8f;
-	const float height = 0.171f * 1.8f;
+	const float width = 1.f;
+	const float height = 1.f;
 
-	// vertices for quad of hud
-	verts.push_back(tigl::Vertex::PT(glm::vec3(-width, -height, 0.0f), glm::vec2(0, 0)));
-	verts.push_back(tigl::Vertex::PT(glm::vec3(width, -height, 0.0f), glm::vec2(1, 0)));
-	verts.push_back(tigl::Vertex::PT(glm::vec3(width, height, 0.0f), glm::vec2(1, 1)));
-	verts.push_back(tigl::Vertex::PT(glm::vec3(-width, height, 0.0f), glm::vec2(0, 1)));
+	if (color) {
+		verts.push_back(tigl::Vertex::PC(glm::vec3(-width, -height, 0.0f), glm::vec4(0, 0, 0, 1)));
+		verts.push_back(tigl::Vertex::PC(glm::vec3(width, -height, 0.0f), glm::vec4(0, 0, 0, 1)));
+		verts.push_back(tigl::Vertex::PC(glm::vec3(width, height, 0.0f), glm::vec4(0, 0, 0, 1)));
+		verts.push_back(tigl::Vertex::PC(glm::vec3(-width, height, 0.0f), glm::vec4(0, 0, 0, 1)));
+	}
+	else {
+		// vertices for quad of hud
+		verts.push_back(tigl::Vertex::PT(glm::vec3(-width, -height, 0.0f), glm::vec2(0, 0)));
+		verts.push_back(tigl::Vertex::PT(glm::vec3(width, -height, 0.0f), glm::vec2(1, 0)));
+		verts.push_back(tigl::Vertex::PT(glm::vec3(width, height, 0.0f), glm::vec2(1, 1)));
+		verts.push_back(tigl::Vertex::PT(glm::vec3(-width, height, 0.0f), glm::vec2(0, 1)));
+	}
 }
+
 
 HUDComponent::~HUDComponent()
 {
@@ -81,7 +93,6 @@ void HUDComponent::draw()
 	// making texture transparent
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
 
 	texture->bind();
 	tigl::shader->enableTexture(true);
@@ -89,32 +100,20 @@ void HUDComponent::draw()
 	tigl::shader->enableTexture(false);
 	texture->unbind();
 
-	glEnable(GL_DEPTH_TEST);
 	unbindHUD();
 }
 
 void HUDComponent::bindHUD()
 {
-	// Change to 2D projection
-	glMatrixMode(GL_PROJECTION);
-
-	// Save current projection
-	glPushMatrix();
-
-	// Reset matrix
-	glLoadIdentity();
-
-	glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
+	glDisable(GL_DEPTH_TEST);
+	tigl::shader->setProjectionMatrix(glm::ortho(-1.f, 1.0f, -1.f, 1.0f, -1.0f, 1.0f));
 }
 
 void HUDComponent::unbindHUD()
 {
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
+	auto camera = gameObject->getComponent<CameraComponent>();
+	tigl::shader->setProjectionMatrix(projectionMatrix);
+	if (camera)
+		tigl::shader->setViewMatrix(camera->getMatrix());
+	glEnable(GL_DEPTH_TEST);
 }
