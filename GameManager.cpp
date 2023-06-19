@@ -45,7 +45,7 @@ void GameManager::spawnEnemy()
 	enemy->rotation.y = -camera->rotation.y;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
 	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
-	enemy->addComponent(std::make_shared<BoundingBoxComponent>(glm::vec3(-1000, 0, -1000), glm::vec3(1000, 0, 1000)));
+	enemy->addComponent(std::make_shared<BoundingBoxComponent>(glm::vec3(-10, -0.5, -10), glm::vec3(10, 1, 10)));
 	objects.push_back(enemy);
 	aliveEnemies++;
 }

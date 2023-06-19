@@ -2,7 +2,7 @@
 #include "Component.h"
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
-//#include "BoundingBoxComponent.h"
+#include "BoundingBoxComponent.h"
 
 GameObject::GameObject()
 {
@@ -39,6 +39,11 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 
 	tigl::shader->setModelMatrix(modelMatrix);
 	drawComponent->draw();
+
+    auto boundingBox = getComponent <BoundingBoxComponent>();
+    if (boundingBox) {
+        boundingBox->draw();
+    }
 }
 
 void GameObject::update(float elapsedTime)
