@@ -51,7 +51,7 @@ bool turning = false;
 int volume = 50;
 int spawnPointIndex = 0;
 bool cameraMoving = false;
-int difficulty = 500;
+int difficulty = 250;
 
 void init();
 void update();
