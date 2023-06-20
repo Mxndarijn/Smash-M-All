@@ -65,9 +65,6 @@ void setWindowIcon(GLFWwindow* window, const char* filename);
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
 irrklang::ISoundEngine* soundEngine;
-
-Camera* debugCamera;
-
 glm::mat4 projection;
 
 // Callback for screen resizer
@@ -126,7 +123,6 @@ void init()
     soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
     irrklang::ISoundSource* soundSource = soundEngine->addSoundSourceFromFile("sounds/mariotheme.mp3");
 
-    // Seed for random
     srand(time(nullptr));
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -142,22 +138,17 @@ void init()
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
     models.push_back(new ObjModel("models/bulletbill/Bullet_Bill_Mario.obj"));
 
-
-
     gameManager = new GameManager(objects, models, camera);
     gameManager->init();
 
     guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &gameManager->enableEnemySpawn);
 
     guiManager->init(window);
-    //debugCamera = new Camera(window);
 
     camera = std::make_shared<GameObject>();
     camera->position = CAMERA_SPAWN
-    
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
-    //camera->addComponent(std::make_shared<PlayerComponent>());
 
     webcam = new Webcam(window);
     auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "resources/textures/");
@@ -189,8 +180,6 @@ void update()
     }
 
     gameManager->update(drawEndScreen);
-
-    //debugCamera->update(window);
 }
 
 void draw()
@@ -206,7 +195,6 @@ void draw()
 
     tigl::shader->setProjectionMatrix(projectionMatrix);
     tigl::shader->setViewMatrix(cameraComponent->getMatrix());
-    //tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
     tigl::shader->enableColor(true);
@@ -214,10 +202,6 @@ void draw()
     glEnable(GL_DEPTH_TEST);
 
     glPointSize(10.0f);
-
-    //camera->getComponent<RayCastComponent>()->draw();
-
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     for (auto& o : objects)
     {
