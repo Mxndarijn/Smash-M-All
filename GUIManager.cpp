@@ -13,8 +13,8 @@
 #define GUI_HEIGHT 450
 #define GUI_WIDTH 500
 
-#define DIFF_EASY  1500
-#define DIFF_NORMAL 500
+#define DIFF_EASY  750
+#define DIFF_NORMAL 250
 
 int prevIndex = -1;
 
