@@ -34,14 +34,11 @@ void MoveToComponent::update(float elapsedTime)
     auto radians = glm::radians(degrees);
 
     gameObject->rotation.y = interpolateRotationExponential(glm::degrees(gameObject->rotation.y), degrees, DELTA_TIME, DURATION * elapsedTime);
-    //std::cout << glm::degrees(gameObject->rotation.y) << std::endl;
 
     if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.001f) {
         gameObject->rotation.y = radians;
         gameObject->position = target;
-        //drawEndGUI = true;
         gameObject->removeComponent<MoveToComponent>();
-        //if(spawnEnemy == nullptr) return;
         *spawnEnemy = true;
     }
 }
