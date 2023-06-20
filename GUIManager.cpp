@@ -10,12 +10,15 @@
 #include "RotateComponent.h"
 #include "Spawnpoint.h"
 
-#define GUI_HEIGHT 400
-#define GUI_WIDTH 400
+#define GUI_HEIGHT 450
+#define GUI_WIDTH 500
+
+#define DIFF_EASY  1500
+#define DIFF_NORMAL 500
 
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1) }; // Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) }; // , 
-GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy) :
-drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy)
+GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy, int &difficulty) :
+drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy), difficulty(difficulty)
 {
 
 }
@@ -58,7 +61,6 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
     if (ImGui::Button("PLAY!", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
-        std::cout << "De knop is geklikt!" << std::endl;
         camera->removeComponent<RotateComponent>();
         int pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
         auto i = Spawnpoints[pos];
@@ -75,13 +77,16 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
         soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
     }
 
+    ImGui::Text("");
+
+    // Dropdown menu
+    this->difficultyMenu();
+
     ImGui::End();
 
     // ImGui-renderen
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    if (drawGUI) return;
 }
 
 void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int &score, int &lives)
@@ -129,21 +134,57 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     if (ImGui::Button("Quit", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
-        std::cout << "De knop is geklikt!" << std::endl;
         glfwSetWindowShouldClose(window, true);
     }
+
+    ImGui::Text("");
+
+    //Dropdown Menu
+    this->difficultyMenu();
 
     ImGui::End();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    if (drawEndGUI) return;
 }
 
 void GUIManager::update()
 {
 	
+}
+
+void GUIManager::difficultyMenu()
+{
+    // Dropdown menu
+    static const char* items[] = { "Easy", "Normal", "Hard" }; // Voeg hier de gewenste opties toe
+    static int selectedItem = 1;
+    if (ImGui::BeginCombo(" Difficulty", items[selectedItem]))
+    {
+        for (int i = 0; i < IM_ARRAYSIZE(items); i++)
+        {
+            const bool isSelected = (selectedItem == i);
+            if (ImGui::Selectable(items[i], isSelected))
+            {
+                selectedItem = i;
+                switch (i)
+                {
+                case 0:
+                    difficulty = DIFF_EASY;
+                    break;
+                case 1:
+                    difficulty = DIFF_NORMAL;
+                    break;
+                case 2:
+                    difficulty = 0;
+                    break;
+                }
+            }
+
+            if (isSelected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
 }
 
 void GUIManager::init(GLFWwindow* window)

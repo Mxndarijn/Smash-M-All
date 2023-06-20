@@ -13,7 +13,7 @@ public:
 	int lives = 3;
 	bool enableEnemySpawn = false;
 
-	GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera);
+	GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera, int &difficulty);
 	~GameManager();
 
 	void spawnEnemy();
@@ -29,5 +29,6 @@ private:
 	Timerf* spawnTimer;
 	int getRandomEnemy();
 	glm::vec3 randomizeEnemyPos(std::shared_ptr<GameObject>& camera);
+	int& difficulty;
 };
 

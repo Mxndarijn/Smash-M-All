@@ -6,8 +6,7 @@
 #include "RayCastComponent.h"
 
 #define SPAWN_OFFSET 100
-#define TIME_OFFSET 2
-#define TIME_MAX 4
+#define TIME_MAX 100
 
 int aliveEnemies = 0;
 int count = 2;
@@ -23,7 +22,7 @@ auto removeDead = [](std::shared_ptr<GameObject> object)
 	return false;
 };
 
-GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera) : objects(objects), models(models), camera(camera), spawnEnemyOffset(75.f)
+GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera, int &difficulty) : objects(objects), models(models), camera(camera), spawnEnemyOffset(75.f), difficulty(difficulty)
 {
 
 }
@@ -106,7 +105,7 @@ void GameManager::update(bool& endscreen)
 
 		if (!spawnTimer->started)
 		{
-			spawnTimer->changeDelay((rand() % TIME_MAX) + TIME_OFFSET);
+			spawnTimer->changeDelay((rand() % TIME_MAX) + difficulty);
 			spawnTimer->startTimer();
 		}
 		if (count <= 0)
