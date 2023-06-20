@@ -11,11 +11,17 @@
 #include "Spawnpoint.h"
 
 #define GUI_HEIGHT 400
-#define GUI_WIDTH 400
+#define GUI_WIDTH 500
+#define END_HEIGHT 500
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1) }; // Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) };
-GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy) :
-drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy)
+#define DIFF_EASY  750
+#define DIFF_NORMAL 250
+
+int prevIndex = -1;
+
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) };
+GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy, int &difficulty) :
+drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy), difficulty(difficulty)
 {
 
 }
@@ -58,11 +64,10 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
     if (ImGui::Button("PLAY!", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
-        std::cout << "De knop is geklikt!" << std::endl;
         camera->removeComponent<RotateComponent>();
         int pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
         auto i = Spawnpoints[pos];
-
+        prevIndex = pos;
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawGUI = false;
         
@@ -70,18 +75,19 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
     ImGui::Text("");
 
-    if (ImGui::SliderInt(" Volume", &volume, 0, 100))
-    {
-        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
-    }
+    //Volume slider
+    this->volumeSlider();
+    
+    ImGui::Text("");
+
+    // Dropdown menu
+    this->difficultyMenu();
 
     ImGui::End();
 
     // ImGui-renderen
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    if (drawGUI) return;
 }
 
 void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int &score, int &lives)
@@ -89,7 +95,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     createFrame();
 
     ImGuiIO& io = ImGui::GetIO();
-    ImVec2 guiSize = ImVec2(GUI_WIDTH, GUI_HEIGHT);
+    ImVec2 guiSize = ImVec2(GUI_WIDTH, END_HEIGHT);
     ImVec2 windowSize = io.DisplaySize;
 
     ImVec2 guiPosition = ImVec2((windowSize.x - guiSize.x) * 0.5f, (windowSize.y - guiSize.y) * 0.5f);
@@ -103,7 +109,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     ImGui::Text("");
     auto title = "Smash'm'all!";
     auto textWidth = ImGui::CalcTextSize(title).x;
-    std::string sScore = (score != 69) ? (std::to_string(score) + " nice!") : std::to_string(score);
+    std::string sScore = (score == 69) ? (std::to_string(score) + " nice!") : std::to_string(score);
     const char* cScore = sScore.c_str();
     ImGui::SetCursorPosX((GUI_WIDTH - textWidth) * 0.5f);
     ImGui::Text(title);
@@ -120,7 +126,13 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
         // Actie wanneer er op de knop wordt geklikt
         score = 0;
         lives = 3;
-        auto i = Spawnpoints[rand() % 1];
+        int pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
+        while(pos == prevIndex)
+        {
+            pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
+        }
+        auto i = Spawnpoints[pos];
+        prevIndex = pos;
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawEndGUI = false;
     }
@@ -129,21 +141,71 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     if (ImGui::Button("Quit", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
-        std::cout << "De knop is geklikt!" << std::endl;
         glfwSetWindowShouldClose(window, true);
     }
+
+    ImGui::Text("");
+
+    //Volume slider
+    this->volumeSlider();
+
+    ImGui::Text("");
+
+    //Dropdown Menu
+    this->difficultyMenu();
 
     ImGui::End();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    if (drawEndGUI) return;
 }
 
 void GUIManager::update()
 {
 	
+}
+
+void GUIManager::difficultyMenu()
+{
+    // Dropdown menu
+    static const char* items[] = { "Easy", "Normal", "Hard" }; // Voeg hier de gewenste opties toe
+    static int selectedItem = 1;
+    if (ImGui::BeginCombo(" Difficulty", items[selectedItem]))
+    {
+        for (int i = 0; i < IM_ARRAYSIZE(items); i++)
+        {
+            const bool isSelected = (selectedItem == i);
+            if (ImGui::Selectable(items[i], isSelected))
+            {
+                selectedItem = i;
+                switch (i)
+                {
+                case 0:
+                    difficulty = DIFF_EASY;
+                    break;
+                case 1:
+                    difficulty = DIFF_NORMAL;
+                    break;
+                case 2:
+                    difficulty = 0;
+                    break;
+                }
+            }
+
+            if (isSelected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
+
+void GUIManager::volumeSlider()
+{
+    if (ImGui::SliderInt(" Volume", &volume, 0, 100))
+    {
+        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
+    }
+
 }
 
 void GUIManager::init(GLFWwindow* window)

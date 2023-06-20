@@ -4,6 +4,10 @@
 #include "ModelComponent.h"
 #include "BoundingBoxComponent.h"
 #include "RayCastComponent.h"
+
+#define SPAWN_OFFSET 100
+#define TIME_MAX 100
+
 int aliveEnemies = 0;
 int count = 2;
 
@@ -20,7 +24,7 @@ auto removeDead = [](std::shared_ptr<GameObject> object)
 	return false;
 };
 
-GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera) : objects(objects), models(models), camera(camera), spawnEnemyOffset(75.f)
+GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera, int &difficulty) : objects(objects), models(models), camera(camera), spawnEnemyOffset(75.f), difficulty(difficulty)
 {
 	lives = 3;
 }
@@ -58,6 +62,7 @@ void GameManager::update(bool& endscreen)
 
 	if (lives <= 0)
 	{
+
 		spawnTimer->started = false;
 		enableEnemySpawn = false;
 		endscreen = true;
@@ -102,7 +107,10 @@ void GameManager::update(bool& endscreen)
 		enableEnemySpawn = false;
 
 		if (!spawnTimer->started)
+		{
+			spawnTimer->changeDelay((rand() % TIME_MAX) + difficulty);
 			spawnTimer->startTimer();
+		}
 		if (count <= 0)
 		{
 			spawnTimer->started = false;
@@ -117,7 +125,7 @@ void GameManager::update(bool& endscreen)
 		{
 			for (const auto& line : lines)
 			{
-				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)))
+				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)) && lives > 0)
 				{
 					std::cout << "Found collision removing object\n";
 					score++;

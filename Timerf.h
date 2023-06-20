@@ -12,6 +12,7 @@ public:
 
 	void startTimer();
 	void stopTimer();
+	void changeDelay(int newDelay);
 
 private:
 	void run();

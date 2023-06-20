@@ -48,9 +48,10 @@ double lastFrameTime = 0;
 bool drawGui = true;
 bool drawEndScreen = false;
 bool turning = false;
-int volume = 100;
+int volume = 50;
 int spawnPointIndex = 0;
 bool cameraMoving = false;
+int difficulty = 500;
 
 void init();
 void update();
@@ -138,15 +139,18 @@ void init()
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
     models.push_back(new ObjModel("models/bulletbill/Bullet_Bill_Mario.obj"));
 
-    gameManager = new GameManager(objects, models, camera);
+
+
+    gameManager = new GameManager(objects, models, camera, difficulty);
     gameManager->init();
 
-    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &gameManager->enableEnemySpawn);
+    guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &gameManager->enableEnemySpawn, difficulty);
 
     guiManager->init(window);
 
     camera = std::make_shared<GameObject>();
-    camera->position = CAMERA_SPAWN
+    camera->position = CAMERA_SPAWN;
+    
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
 
