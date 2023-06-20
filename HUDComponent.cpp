@@ -64,16 +64,12 @@ void HUDComponent::update(float deltaTime)
 	delete texture;
 	if (webcam)
 		texture = webcam->getWebcamFrame();
-	//updateHUDPosition();
 }
 
 void HUDComponent::updateHUDPosition() {
 
 	glm::mat4 ret(1.0f);
 	glm::vec3 position = -gameObject->position;
-	//glm::vec3 position = glm::vec3(50, 0, 50);
-	//std::cout << "Position: " << gameObject->position.x << " , " << gameObject->position.y << " , " << gameObject->position.z << std::endl;
-	//std::cout << "Position matrix: " << position.x << " , " << position.y << " , " << position.z << std::endl;
 
 	position.y *= -1;
 	// position of player

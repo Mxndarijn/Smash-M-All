@@ -33,9 +33,6 @@ void RayCastComponent::draw()
 {
 	glBegin(GL_LINES);
 	glEnable(GL_DEPTH_TEST);
-	
-	//tigl::shader->enableColor(true);
-	//glColor4f(1.0f, 0.0f, 0.0f, 1.f);  // Red color
 
 	for (auto& line : lines) {
 		glm::vec3 near = std::get<0>(line);
@@ -44,10 +41,8 @@ void RayCastComponent::draw()
 		glVertex3f(far.x, far.y, far.z);
 	}
 
-//	tigl::shader->enableColor(false);
 	glEnd();
 }
-
 
 std::tuple<glm::vec3, glm::vec3> RayCastComponent::pointToVec3(glm::vec2 point)
 {
@@ -55,7 +50,6 @@ std::tuple<glm::vec3, glm::vec3> RayCastComponent::pointToVec3(glm::vec2 point)
 
 	int viewPort[4];
 	glGetIntegerv(GL_VIEWPORT, viewPort);
-	//std::cout << "Point: " << point.x << " " << point.y << std::endl;
 
 	auto testPoint = glm::vec2(5, 5) + point;
 	glm::vec3 retNear = glm::unProject(glm::vec3(point, 0.0f), cameraComponent->getMatrix(), projectionMatrix, glm::vec4(viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
