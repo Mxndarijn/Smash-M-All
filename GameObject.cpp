@@ -40,11 +40,6 @@ void GameObject::draw(const glm::mat4& parentMatrix)
 	tigl::shader->setModelMatrix(modelMatrix);
 
     drawComponent->draw();
-
-    auto boundingBox = getComponent <BoundingBoxComponent>();
-    if (boundingBox) {
-        boundingBox->draw();
-    }
 }
 
 void GameObject::update(float elapsedTime)
