@@ -61,6 +61,7 @@ void GameManager::update(bool& endscreen)
 
 	if (lives <= 0)
 	{
+
 		spawnTimer->started = false;
 		enableEnemySpawn = false;
 		endscreen = true;
@@ -123,7 +124,7 @@ void GameManager::update(bool& endscreen)
 		{
 			for (const auto& line : lines)
 			{
-				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)))
+				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)) && lives > 0)
 				{
 					std::cout << "Found collision removing object\n";
 					score++;
