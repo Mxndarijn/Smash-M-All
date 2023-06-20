@@ -10,8 +10,9 @@
 #include "RotateComponent.h"
 #include "Spawnpoint.h"
 
-#define GUI_HEIGHT 500
+#define GUI_HEIGHT 400
 #define GUI_WIDTH 500
+#define END_HEIGHT 500
 
 #define DIFF_EASY  750
 #define DIFF_NORMAL 250
@@ -94,7 +95,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     createFrame();
 
     ImGuiIO& io = ImGui::GetIO();
-    ImVec2 guiSize = ImVec2(GUI_WIDTH, GUI_HEIGHT);
+    ImVec2 guiSize = ImVec2(GUI_WIDTH, END_HEIGHT);
     ImVec2 windowSize = io.DisplaySize;
 
     ImVec2 guiPosition = ImVec2((windowSize.x - guiSize.x) * 0.5f, (windowSize.y - guiSize.y) * 0.5f);
