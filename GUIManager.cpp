@@ -85,7 +85,7 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
 }
 
-void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, const int &score)
+void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int &score)
 {
     createFrame();
 
@@ -119,7 +119,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     if (ImGui::Button("Restart", buttonSize))
     {
         // Actie wanneer er op de knop wordt geklikt
-        std::cout << "De knop is geklikt!" << std::endl;
+        score = 0;
         auto i = Spawnpoints[rand() % 1];
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawEndGUI = false;

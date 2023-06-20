@@ -32,8 +32,7 @@ Texture* Webcam::getWebcamFrame()
     int screenWidth, screenHeight;
     glfwGetWindowSize(window, &screenWidth, &screenHeight);
 
-
-    cv::rectangle(result, cv::Rect(0,0, imageWidth, imageHeight), cv::Scalar(0,0,255,255), 1);
+    //cv::rectangle(result, cv::Rect(0,0, imageWidth, imageHeight), cv::Scalar(0,0,255,255), 1);
     for (auto& point : detectionPoints) {
         //Debugging
         cv::circle(result, point, 5, cv::Scalar(0, 0, 10, 15), -1);

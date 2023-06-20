@@ -125,6 +125,7 @@ void GameManager::update(bool& endscreen)
 }
 
 int GameManager::getRandomEnemy() {
+	return 1;
 	int listSize = models.size();
 	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }

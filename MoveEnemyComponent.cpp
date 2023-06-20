@@ -25,7 +25,7 @@ void MoveEnemyComponent::update(float elapsedTime)
     auto minDistanceTraveled = 0.025f;
     speed = 0.0005f / elapsedTime;
 
-    auto target = glm::vec3( -camera->position.x, camera->position.y, -camera->position.z);
+    auto target = glm::vec3( -camera->position.x, camera->position.y - 2, -camera->position.z);
     glm::vec3 direction = glm::normalize(target - gameObject->position);
 
     auto newPos = (1 - speed) * gameObject->position + speed * target;
