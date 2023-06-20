@@ -41,8 +41,6 @@ std::array<glm::vec3, 2> BoundingBoxComponent::getCorners(glm::vec3 minCorner, g
 
 	corners[0] = minimal;
 	corners[1] = maximal;
-	//corners[2] = glm::vec3(maximal.x, 1.f, minimal.z);
-	//corners[3] = glm::vec3(maximal.x, 0.f, maximal.z);
 
 	return corners;
 }

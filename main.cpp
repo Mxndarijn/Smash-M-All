@@ -66,9 +66,6 @@ void setWindowIcon(GLFWwindow* window, const char* filename);
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> camera;
 irrklang::ISoundEngine* soundEngine;
-
-Camera* debugCamera;
-
 glm::mat4 projection;
 
 // Callback for screen resizer
@@ -104,7 +101,7 @@ int main(void)
         }
         if (drawEndScreen)
         {
-            guiManager->renderEndGUI(window, camera, gameManager->score, gameManager->lives);
+            guiManager->renderEndGUI(window, camera, gameManager->score, lives);
         }   
 
         glfwSwapBuffers(window);
@@ -127,7 +124,6 @@ void init()
     soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
     irrklang::ISoundSource* soundSource = soundEngine->addSoundSourceFromFile("sounds/mariotheme.mp3");
 
-    // Seed for random
     srand(time(nullptr));
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -151,17 +147,15 @@ void init()
     guiManager = new GUIManager(drawGui, drawEndScreen, soundEngine, volume, &gameManager->enableEnemySpawn, difficulty);
 
     guiManager->init(window);
-    //debugCamera = new Camera(window);
 
     camera = std::make_shared<GameObject>();
     camera->position = CAMERA_SPAWN;
     
     camera->addComponent(std::make_shared<CameraComponent>(window));
     camera->addComponent(std::make_shared<RotateComponent>());
-    //camera->addComponent(std::make_shared<PlayerComponent>());
 
     webcam = new Webcam(window);
-    auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "webcam");
+    auto hudComponent = std::make_shared<HUDComponent>(window, webcam, "resources/textures/");
     camera->addComponent(hudComponent);
 
     auto rayCastComponent = std::make_shared<RayCastComponent>(
@@ -190,8 +184,6 @@ void update()
     }
 
     gameManager->update(drawEndScreen);
-
-    //debugCamera->update(window);
 }
 
 void draw()
@@ -201,13 +193,12 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    projectionMatrix = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 250.0f);
+    projectionMatrix = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 500.0f);
 
     auto cameraComponent = camera->getComponent<CameraComponent>();
 
     tigl::shader->setProjectionMatrix(projectionMatrix);
     tigl::shader->setViewMatrix(cameraComponent->getMatrix());
-    //tigl::shader->setViewMatrix(debugCamera->getMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
 
     tigl::shader->enableColor(true);
@@ -215,10 +206,6 @@ void draw()
     glEnable(GL_DEPTH_TEST);
 
     glPointSize(10.0f);
-
-    //camera->getComponent<RayCastComponent>()->draw();
-
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     for (auto& o : objects)
     {

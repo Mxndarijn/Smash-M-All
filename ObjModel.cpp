@@ -74,9 +74,6 @@ static inline std::string cleanLine(std::string line)
 	return line;
 }
 
-
-
-
 /**
 * Loads an object model
 */
@@ -186,19 +183,14 @@ ObjModel::ObjModel(const std::string& fileName)
 
 		for (const auto& face : group->faces) {
 			for (const auto& vertex : face.vertices) {
-				//std::cout << "position: " << vertex.position << ", normal: " << vertex.normal << ", texcoord: " << vertex.texcoord << ".\n";
 				if (vertex.normal < 0 && vertex.texcoord < 0)
 					verts.push_back(tigl::Vertex::P(vertices[vertex.position]));
-				//tigl::addVertex(tigl::Vertex::P(vertices[vertex.position]));
 				else if (vertex.normal < 0)
 					verts.push_back(tigl::Vertex::PT(vertices[vertex.position], texcoords[vertex.texcoord]));
-				//tigl::addVertex(tigl::Vertex::PT(vertices[vertex.position], texcoords[vertex.texcoord]));
 				else if (vertex.texcoord < 0)
 					verts.push_back(tigl::Vertex::PN(vertices[vertex.position], normals[vertex.normal]));
-				//tigl::addVertex(tigl::Vertex::PN(vertices[vertex.position], normals[vertex.normal]));
 				else
 					verts.push_back(tigl::Vertex::PTN(vertices[vertex.position], texcoords[vertex.texcoord], normals[vertex.normal]));
-				//tigl::addVertex(tigl::Vertex::PTN(vertices[vertex.position], texcoords[vertex.texcoord], normals[vertex.normal]));
 			}
 		}
 	}
@@ -211,12 +203,6 @@ ObjModel::~ObjModel(void)
 
 void ObjModel::draw()
 {
-	//foreach group in groups
-	//  set material texture, if available
-	//  set material color, if available
-	//  foreach face in group
-	//    foreach vertex in face
-	//      emit vertex
 	if (texture)
 	{
 		texture->bind();
@@ -225,7 +211,6 @@ void ObjModel::draw()
 		tigl::shader->enableTexture(false);
 		texture->unbind();
 	}
-	//tigl::drawVertices(GL_TRIANGLES,verts);
 }
 
 void ObjModel::loadMaterialFile(const std::string& fileName, const std::string& dirName)

@@ -10,7 +10,6 @@ class GameManager
 {
 public:
 	int score = 0;
-	int lives = 3;
 	bool enableEnemySpawn = false;
 
 	GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera, int &difficulty);
@@ -32,3 +31,4 @@ private:
 	int& difficulty;
 };
 
+extern int lives;

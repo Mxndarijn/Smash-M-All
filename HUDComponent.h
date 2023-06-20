@@ -21,8 +21,11 @@ private:
 	Texture* texture = nullptr;
 	Webcam* webcam = nullptr;
 	glm::mat4 mat;	
+
+	std::vector<Texture*> heartTextures;
+	std::vector<tigl::Vertex> heartVerts;
 private:
-	void bindHUD();
+	void bindHUD(const float& size);
 	void unbindHUD();
 	void updateHUDPosition();
 };
