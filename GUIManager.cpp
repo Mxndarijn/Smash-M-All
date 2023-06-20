@@ -103,7 +103,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     ImGui::Text("");
     auto title = "Smash'm'all!";
     auto textWidth = ImGui::CalcTextSize(title).x;
-    std::string sScore = std::to_string(score);
+    std::string sScore = (score != 69) ? (std::to_string(score) + " nice!") : std::to_string(score);
     const char* cScore = sScore.c_str();
     ImGui::SetCursorPosX((GUI_WIDTH - textWidth) * 0.5f);
     ImGui::Text(title);

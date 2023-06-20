@@ -33,7 +33,6 @@ Texture* Webcam::getWebcamFrame()
     glfwGetWindowSize(window, &screenWidth, &screenHeight);
 
     for (auto& point : detectionPoints) {
-        //Debugging
         int pointX = ((double) point.x / imageWidth) * screenWidth;
         int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
         glm::vec2 realPoint = glm::vec2(pointX, pointY);
