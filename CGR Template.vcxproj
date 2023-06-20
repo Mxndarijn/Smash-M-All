@@ -189,7 +189,6 @@
     <ClCompile Include="MoveEnemyComponent.cpp" />
     <ClCompile Include="MoveToComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
-    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="RayCastComponent.cpp" />
     <ClCompile Include="RotateComponent.cpp" />
@@ -203,7 +202,6 @@
     <ClInclude Include="BoundingBoxComponent.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraComponent.h" />
-    <ClInclude Include="CameraState.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="DrawComponent.h" />
@@ -225,7 +223,6 @@
     <ClInclude Include="MoveEnemyComponent.h" />
     <ClInclude Include="MoveToComponent.h" />
     <ClInclude Include="ObjModel.h" />
-    <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="RayCastComponent.h" />
     <ClInclude Include="RotateComponent.h" />
