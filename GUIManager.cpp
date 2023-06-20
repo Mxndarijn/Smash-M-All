@@ -10,7 +10,7 @@
 #include "RotateComponent.h"
 #include "Spawnpoint.h"
 
-#define GUI_HEIGHT 450
+#define GUI_HEIGHT 500
 #define GUI_WIDTH 500
 
 #define DIFF_EASY  750
@@ -74,11 +74,9 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
 
     ImGui::Text("");
 
-    if (ImGui::SliderInt(" Volume", &volume, 0, 100))
-    {
-        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
-    }
-
+    //Volume slider
+    this->volumeSlider();
+    
     ImGui::Text("");
 
     // Dropdown menu
@@ -110,7 +108,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     ImGui::Text("");
     auto title = "Smash'm'all!";
     auto textWidth = ImGui::CalcTextSize(title).x;
-    std::string sScore = (score != 69) ? (std::to_string(score) + " nice!") : std::to_string(score);
+    std::string sScore = (score == 69) ? (std::to_string(score) + " nice!") : std::to_string(score);
     const char* cScore = sScore.c_str();
     ImGui::SetCursorPosX((GUI_WIDTH - textWidth) * 0.5f);
     ImGui::Text(title);
@@ -144,6 +142,11 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
         // Actie wanneer er op de knop wordt geklikt
         glfwSetWindowShouldClose(window, true);
     }
+
+    ImGui::Text("");
+
+    //Volume slider
+    this->volumeSlider();
 
     ImGui::Text("");
 
@@ -193,6 +196,15 @@ void GUIManager::difficultyMenu()
         }
         ImGui::EndCombo();
     }
+}
+
+void GUIManager::volumeSlider()
+{
+    if (ImGui::SliderInt(" Volume", &volume, 0, 100))
+    {
+        soundEngine->setSoundVolume(static_cast<float>(volume) / 100);
+    }
+
 }
 
 void GUIManager::init(GLFWwindow* window)

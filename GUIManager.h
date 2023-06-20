@@ -29,4 +29,5 @@ private:
 	irrklang::ISoundEngine* soundEngine;
 
 	void difficultyMenu();
+	void volumeSlider();
 };

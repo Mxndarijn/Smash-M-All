@@ -110,9 +110,17 @@ void HUDComponent::draw()
 	texture->unbind();
 
 	bindHUD(6.f);
-	heartTextures[lives]->bind();
-	tigl::drawVertices(GL_QUADS, heartVerts);
-	heartTextures[lives]->unbind();
+	if(lives > 0)
+	{
+		heartTextures[lives]->bind();
+		tigl::drawVertices(GL_QUADS, heartVerts);
+		heartTextures[lives]->unbind();
+	} else
+	{
+		heartTextures[0]->bind();
+		tigl::drawVertices(GL_QUADS, heartVerts);
+		heartTextures[0]->unbind();
+	}
 
 	tigl::shader->enableTexture(false);
 
