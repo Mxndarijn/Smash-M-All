@@ -7,6 +7,8 @@
 int aliveEnemies = 0;
 int count = 2;
 
+int lives;
+
 auto removeDead = [](std::shared_ptr<GameObject> object)
 {
 	if (object->isDead)
@@ -20,7 +22,7 @@ auto removeDead = [](std::shared_ptr<GameObject> object)
 
 GameManager::GameManager(std::list<std::shared_ptr<GameObject>>& objects, std::vector<ObjModel*>& models, std::shared_ptr<GameObject>& camera) : objects(objects), models(models), camera(camera), spawnEnemyOffset(75.f)
 {
-
+	lives = 3;
 }
 
 GameManager::~GameManager()
