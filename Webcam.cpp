@@ -35,7 +35,6 @@ Texture* Webcam::getWebcamFrame()
     //cv::rectangle(result, cv::Rect(0,0, imageWidth, imageHeight), cv::Scalar(0,0,255,255), 1);
     for (auto& point : detectionPoints) {
         //Debugging
-        cv::circle(result, point, 5, cv::Scalar(0, 0, 10, 15), -1);
         int pointX = ((double) point.x / imageWidth) * screenWidth;
         int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;
         glm::vec2 realPoint = glm::vec2(pointX, pointY);
