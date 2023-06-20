@@ -103,7 +103,7 @@ int main(void)
         }
         if (drawEndScreen)
         {
-            guiManager->renderEndGUI(window, camera, gameManager->score, gameManager->lives);
+            guiManager->renderEndGUI(window, camera, gameManager->score, lives);
         }   
 
         glfwSwapBuffers(window);
