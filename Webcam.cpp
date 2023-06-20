@@ -32,7 +32,6 @@ Texture* Webcam::getWebcamFrame()
     int screenWidth, screenHeight;
     glfwGetWindowSize(window, &screenWidth, &screenHeight);
 
-    //cv::rectangle(result, cv::Rect(0,0, imageWidth, imageHeight), cv::Scalar(0,0,255,255), 1);
     for (auto& point : detectionPoints) {
         //Debugging
         int pointX = ((double) point.x / imageWidth) * screenWidth;
@@ -40,17 +39,6 @@ Texture* Webcam::getWebcamFrame()
         glm::vec2 realPoint = glm::vec2(pointX, pointY);
         resizedDetectionPoints.push_back(realPoint);
     }
-    /*auto point = cv::Point(400, 400);
-    cv::circle(result, point, 10, cv::Scalar(0, 0, 10, 15), -1);
-
-    int pointX = ((double) point.x / imageWidth) * screenWidth;
-    int pointY = screenHeight - ((double) point.y / imageHeight) * screenHeight;*/
-
-    //resizedDetectionPoints.push_back(glm::vec2(pointX, pointY));
-
-
-
-
     texture = new Texture(result);
     return texture;
 }
