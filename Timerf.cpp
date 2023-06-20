@@ -17,6 +17,12 @@ void Timerf::startTimer()
 	timeThread.detach();
 }
 
+void Timerf::changeDelay(int newDelay)
+{
+	delay = newDelay;
+}
+
+
 void Timerf::run() 
 {
 	while (started) {

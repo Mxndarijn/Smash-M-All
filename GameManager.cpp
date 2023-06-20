@@ -4,6 +4,11 @@
 #include "ModelComponent.h"
 #include "BoundingBoxComponent.h"
 #include "RayCastComponent.h"
+
+#define SPAWN_OFFSET 100
+#define TIME_OFFSET 2
+#define TIME_MAX 4
+
 int aliveEnemies = 0;
 int count = 2;
 
@@ -100,7 +105,10 @@ void GameManager::update(bool& endscreen)
 		enableEnemySpawn = false;
 
 		if (!spawnTimer->started)
+		{
+			spawnTimer->changeDelay((rand() % TIME_MAX) + TIME_OFFSET);
 			spawnTimer->startTimer();
+		}
 		if (count <= 0)
 		{
 			spawnTimer->started = false;
