@@ -16,7 +16,7 @@
 #define DIFF_EASY  1500
 #define DIFF_NORMAL 500
 
-Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) }; };
+Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) };
 GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy, int &difficulty) :
 drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy), difficulty(difficulty)
 {
