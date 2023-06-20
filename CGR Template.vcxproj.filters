@@ -138,9 +138,6 @@
     <ClCompile Include="RayCastComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LifeComponent.cpp">
-      <Filter>Source Files\components</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tigl.h">
@@ -274,9 +271,6 @@
     </ClInclude>
     <ClInclude Include="RayCastComponent.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LifeComponent.h">
-      <Filter>Header Files\components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

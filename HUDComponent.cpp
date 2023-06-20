@@ -33,10 +33,12 @@ HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
 	const float width = 1.f;
 	const float height = 1.f;
 
-	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(-width, -height, 0.0f), glm::vec2(0, 0)));
-	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(width, -height, 0.0f), glm::vec2(1, 0)));
-	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(width, height, 0.0f), glm::vec2(1, 1)));
-	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(-width, height, 0.0f), glm::vec2(0, 1)));
+	const float rightBottom = 5.f;
+
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(-width + rightBottom, -height + -rightBottom, 0.0f), glm::vec2(0, 0)));
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(width + rightBottom, -height + -rightBottom, 0.0f), glm::vec2(1, 0)));
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(width + rightBottom, height + -rightBottom, 0.0f), glm::vec2(1, 1)));
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(-width + rightBottom, height + -rightBottom, 0.0f), glm::vec2(0, 1)));
 
 	if (color) {
 		verts.push_back(tigl::Vertex::PC(glm::vec3(-width, -height, 0.0f), glm::vec4(0, 0, 0, 1)));
