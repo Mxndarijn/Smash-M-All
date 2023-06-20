@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include <iostream>
 #include "RayCastComponent.h"
-
+#include "GameManager.h"
 const bool color = false;
 
 HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
@@ -18,13 +18,27 @@ HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
 		else
 			webcam = new Webcam(window);
 	}
-	else {
+
+	if(path.substr(path.size() - 4)._Equal(".png")) {
 		texture = new Texture(path);
 	}
+	else if(path._Equal("resources/textures/")){
+		for (int i = 0; i <= lives; i++) {
+			std::cout << "filename: " << path << "Hearts" << std::to_string(i) << "\n";
+			heartTextures.push_back(new Texture(path + "Hearts" + std::to_string(i) + ".png"));
+		}
+	}
 
-	// size for hud
+	// size for hud and hearts
 	const float width = 1.f;
 	const float height = 1.f;
+
+	const float rightBottom = 5.f;
+
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(-width + rightBottom, -height + -rightBottom, 0.0f), glm::vec2(0, 0)));
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(width + rightBottom, -height + -rightBottom, 0.0f), glm::vec2(1, 0)));
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(width + rightBottom, height + -rightBottom, 0.0f), glm::vec2(1, 1)));
+	heartVerts.push_back(tigl::Vertex::PT(glm::vec3(-width + rightBottom, height + -rightBottom, 0.0f), glm::vec2(0, 1)));
 
 	if (color) {
 		verts.push_back(tigl::Vertex::PC(glm::vec3(-width, -height, 0.0f), glm::vec4(0, 0, 0, 1)));
@@ -40,7 +54,6 @@ HUDComponent::HUDComponent(GLFWwindow* window, Webcam* webcam, std::string path)
 		verts.push_back(tigl::Vertex::PT(glm::vec3(-width, height, 0.0f), glm::vec2(0, 1)));
 	}
 }
-
 
 HUDComponent::~HUDComponent()
 {
@@ -88,25 +101,32 @@ void HUDComponent::draw()
 {
 	updateHUDPosition();
 	tigl::shader->setModelMatrix(this->mat);
-	bindHUD();
+	bindHUD(1.f);
 
 	// making texture transparent
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	texture->bind();
 	tigl::shader->enableTexture(true);
+
+	texture->bind();
 	tigl::drawVertices(GL_QUADS, verts);
-	tigl::shader->enableTexture(false);
 	texture->unbind();
+
+	bindHUD(6.f);
+	heartTextures[lives]->bind();
+	tigl::drawVertices(GL_QUADS, heartVerts);
+	heartTextures[lives]->unbind();
+
+	tigl::shader->enableTexture(false);
 
 	unbindHUD();
 }
 
-void HUDComponent::bindHUD()
+void HUDComponent::bindHUD(const float& size)
 {
 	glDisable(GL_DEPTH_TEST);
-	tigl::shader->setProjectionMatrix(glm::ortho(-1.f, 1.0f, -1.f, 1.0f, -1.0f, 1.0f));
+	tigl::shader->setProjectionMatrix(glm::ortho(-size, size, -size, size, -size, size));
 }
 
 void HUDComponent::unbindHUD()
