@@ -82,10 +82,9 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (drawGUI) return;
-
 }
 
-void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int &score)
+void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int &score, int &lives)
 {
     createFrame();
 
@@ -120,6 +119,7 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
     {
         // Actie wanneer er op de knop wordt geklikt
         score = 0;
+        lives = 3;
         auto i = Spawnpoints[rand() % 1];
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawEndGUI = false;

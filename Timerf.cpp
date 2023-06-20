@@ -21,7 +21,6 @@ void Timerf::run()
 {
 	while (started) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-		std::cout << "Done with threading" << std::endl;
 		check = true;
 	}
 	
