@@ -16,6 +16,8 @@
 #define DIFF_EASY  1500
 #define DIFF_NORMAL 500
 
+int prevIndex = -1;
+
 Spawnpoint Spawnpoints[] = { Spawnpoint(glm::vec3(-140, 30, -170), 1), Spawnpoint(glm::vec3(184, 20, -20), 180), Spawnpoint(glm::vec3(-170, 110, 150), 270) };
 GUIManager::GUIManager(bool& drawGUI, bool& drawEndGUI, irrklang::ISoundEngine* soundEngine, int& volume, bool *spawnEnemy, int &difficulty) :
 drawGUI(drawGUI), drawEndGUI(drawEndGUI), soundEngine(soundEngine), volume(volume), spawnEnemy(spawnEnemy), difficulty(difficulty)
@@ -64,7 +66,7 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
         camera->removeComponent<RotateComponent>();
         int pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
         auto i = Spawnpoints[pos];
-
+        prevIndex = pos;
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawGUI = false;
         
@@ -126,7 +128,12 @@ void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObje
         score = 0;
         lives = 3;
         int pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
+        while(pos == prevIndex)
+        {
+            pos = rand() % (sizeof(Spawnpoints) / sizeof(Spawnpoint));
+        }
         auto i = Spawnpoints[pos];
+        prevIndex = pos;
         camera->addComponent(std::make_shared<MoveToComponent>(i.pos, i.rot, drawEndGUI, spawnEnemy));
         drawEndGUI = false;
     }

@@ -11,6 +11,7 @@
 int aliveEnemies = 0;
 int count = 2;
 
+
 auto removeDead = [](std::shared_ptr<GameObject> object)
 {
 	if (object->isDead)
