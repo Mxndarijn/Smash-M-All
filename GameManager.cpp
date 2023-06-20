@@ -38,13 +38,13 @@ void GameManager::init()
 	spawnTimer = new Timerf(5000, enableEnemySpawn);
 }
 
-void GameManager::spawnEnemy() 
+void GameManager::spawnEnemy()
 {
 	auto enemy = std::make_shared<GameObject>();
 	enemy->position = randomizeEnemyPos(camera);
 	enemy->rotation.y = -camera->rotation.y;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
-	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
+	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera));
 	enemy->addComponent(std::make_shared<BoundingBoxComponent>(glm::vec3(-6, 0, -6), glm::vec3(6, 10, 6)));
 	objects.push_back(enemy);
 	aliveEnemies++;
@@ -53,6 +53,42 @@ void GameManager::spawnEnemy()
 void GameManager::update(bool& endscreen)
 {
 	auto lines = camera->getComponent<RayCastComponent>()->lines;
+
+	if (lives <= 0)
+	{
+		spawnTimer->started = false;
+		enableEnemySpawn = false;
+		endscreen = true;
+	}
+
+	for (const auto& enemy : objects)
+	{
+		if (!enemy->isDead)
+		{
+			auto target = glm::vec3(-camera->position.x, camera->position.y, -camera->position.z);
+			glm::vec3 direction = glm::normalize(target - enemy->position);
+			if (enemy->position.x >= target.x - 10.0f && enemy->position.z >= target.z - 10.0f && direction.x >= 0 && direction.z >= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+			if (enemy->position.x <= target.x + 10.0f && enemy->position.z <= target.z + 10.0f && direction.x <= 0 && direction.z <= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+			if (enemy->position.x >= target.x - 10.0f && enemy->position.z <= target.z + 10.0f && direction.x >= 0 && direction.z <= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+			if (enemy->position.x <= target.x + 10.0f && enemy->position.z >= target.z - 10.0f && direction.x <= 0 && direction.z >= 0)
+			{
+				enemy->isDead = true;
+				lives--;
+			}
+		}
+	}
 
 	if (lines.empty())
 	{
@@ -88,41 +124,6 @@ void GameManager::update(bool& endscreen)
 			}
 		}
 	}
-
-	for (const auto& enemy : objects)
-	{
-		if (!enemy->isDead)
-		{
-			auto target = glm::vec3(-camera->position.x, camera->position.y, -camera->position.z);
-			glm::vec3 direction = glm::normalize(target - enemy->position);
-			if (enemy->position.x >= target.x - 10.0f && enemy->position.z >= target.z - 10.0f && direction.x >= 0 && direction.z >= 0)
-			{
-				enemy->isDead = true;
-				lives--;
-			}
-			if (enemy->position.x <= target.x + 10.0f && enemy->position.z <= target.z + 10.0f && direction.x <= 0 && direction.z <= 0)
-			{
-				enemy->isDead = true;
-				lives--;
-			}
-			if (enemy->position.x >= target.x - 10.0f && enemy->position.z <= target.z + 10.0f && direction.x >= 0 && direction.z <= 0)
-			{
-				enemy->isDead = true;
-				lives--;
-			}
-			if (enemy->position.x <= target.x + 10.0f && enemy->position.z >= target.z - 10.0f && direction.x <= 0 && direction.z >= 0)
-			{
-				enemy->isDead = true;
-				lives--;
-			}
-		}
-
-		if (lives <= 0)
-		{
-			endscreen = true;
-			spawnTimer->started = false;
-		}
-	}
 }
 
 int GameManager::getRandomEnemy() {
@@ -138,7 +139,7 @@ glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {
 	{
 		enemyPos = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) + rand() % 50), camera->position.y - (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) + rand() % 50);
 	}
-	else 
+	else
 	{
 		enemyPos = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) - rand() % 50), camera->position.y + (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) - rand() % 50);
 	}
