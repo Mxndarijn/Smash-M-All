@@ -82,7 +82,6 @@ void GUIManager::renderGUI(const std::shared_ptr<GameObject>& camera)
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
     if (drawGUI) return;
-
 }
 
 void GUIManager::renderEndGUI(GLFWwindow* window, const std::shared_ptr<GameObject>& camera, int &score)

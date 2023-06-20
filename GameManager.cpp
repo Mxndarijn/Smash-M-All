@@ -62,7 +62,6 @@ void GameManager::update(bool& endscreen)
 	if (enableEnemySpawn) {
 		spawnEnemy();
 		enableEnemySpawn = false;
-		count--;
 
 		if (!spawnTimer->started)
 			spawnTimer->startTimer();
@@ -71,6 +70,7 @@ void GameManager::update(bool& endscreen)
 			spawnTimer->started = false;
 		}
 	}
+
 	for (const auto& object : objects)
 	{
 		auto boundingBox = object->getComponent<BoundingBoxComponent>();
@@ -88,8 +88,6 @@ void GameManager::update(bool& endscreen)
 			}
 		}
 	}
-	if (count <= 0 && aliveEnemies <= 0)
-		endscreen = true;
 
 	for (const auto& enemy : objects)
 	{
@@ -120,12 +118,14 @@ void GameManager::update(bool& endscreen)
 		}
 
 		if (lives <= 0)
+		{
 			endscreen = true;
+			spawnTimer->started = false;
+		}
 	}
 }
 
 int GameManager::getRandomEnemy() {
-	return 1;
 	int listSize = models.size();
 	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }
