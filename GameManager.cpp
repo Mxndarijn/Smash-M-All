@@ -38,13 +38,13 @@ void GameManager::init()
 	spawnTimer = new Timerf(5000, enableEnemySpawn);
 }
 
-void GameManager::spawnEnemy() 
+void GameManager::spawnEnemy()
 {
 	auto enemy = std::make_shared<GameObject>();
 	enemy->position = randomizeEnemyPos(camera);
 	enemy->rotation.y = -camera->rotation.y;
 	enemy->addComponent(std::make_shared<ModelComponent>(models[getRandomEnemy()]));
-	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera)); 
+	enemy->addComponent(std::make_shared<MoveEnemyComponent>(camera));
 	enemy->addComponent(std::make_shared<BoundingBoxComponent>(glm::vec3(-6, 0, -6), glm::vec3(6, 10, 6)));
 	objects.push_back(enemy);
 	aliveEnemies++;
@@ -54,42 +54,12 @@ void GameManager::update(bool& endscreen)
 {
 	auto lines = camera->getComponent<RayCastComponent>()->lines;
 
-	if (lines.empty())
+	if (lives <= 0)
 	{
-		return;
-	}
-
-	if (enableEnemySpawn) {
-		spawnEnemy();
+		spawnTimer->started = false;
 		enableEnemySpawn = false;
-		count--;
-
-		if (!spawnTimer->started)
-			spawnTimer->startTimer();
-		if (count <= 0)
-		{
-			spawnTimer->started = false;
-		}
-	}
-	for (const auto& object : objects)
-	{
-		auto boundingBox = object->getComponent<BoundingBoxComponent>();
-
-		if (boundingBox != nullptr)
-		{
-			for (const auto& line : lines)
-			{
-				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)))
-				{
-					std::cout << "Found collision removing object\n";
-					score++;
-					object->isDead = true;
-				}
-			}
-		}
-	}
-	if (count <= 0 && aliveEnemies <= 0)
 		endscreen = true;
+	}
 
 	for (const auto& enemy : objects)
 	{
@@ -118,14 +88,45 @@ void GameManager::update(bool& endscreen)
 				lives--;
 			}
 		}
+	}
 
-		if (lives <= 0)
-			endscreen = true;
+	if (lines.empty())
+	{
+		return;
+	}
+
+	if (enableEnemySpawn) {
+		spawnEnemy();
+		enableEnemySpawn = false;
+
+		if (!spawnTimer->started)
+			spawnTimer->startTimer();
+		if (count <= 0)
+		{
+			spawnTimer->started = false;
+		}
+	}
+
+	for (const auto& object : objects)
+	{
+		auto boundingBox = object->getComponent<BoundingBoxComponent>();
+
+		if (boundingBox != nullptr)
+		{
+			for (const auto& line : lines)
+			{
+				if (boundingBox->collide(std::get<0>(line), std::get<1>(line)))
+				{
+					std::cout << "Found collision removing object\n";
+					score++;
+					object->isDead = true;
+				}
+			}
+		}
 	}
 }
 
 int GameManager::getRandomEnemy() {
-	return 1;
 	int listSize = models.size();
 	return 2 + (rand() % (listSize - 2)); // -2 and +2 because index 0 is the world and index 1 is a powerup, not an enemy.
 }
@@ -138,7 +139,7 @@ glm::vec3 GameManager::randomizeEnemyPos(std::shared_ptr<GameObject>& camera) {
 	{
 		enemyPos = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) + rand() % 50), camera->position.y - (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) + rand() % 50);
 	}
-	else 
+	else
 	{
 		enemyPos = glm::vec3(-(camera->position.x + (-sin(camera->rotation.y) * spawnEnemyOffset) - rand() % 50), camera->position.y + (rand() % 20), -(camera->position.z + (cos(camera->rotation.y) * spawnEnemyOffset)) - rand() % 50);
 	}
