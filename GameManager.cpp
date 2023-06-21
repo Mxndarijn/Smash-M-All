@@ -103,11 +103,6 @@ void GameManager::update(bool& endscreen)
 		}
 	}
 
-	if (lines.empty())
-	{
-		return;
-	}
-
 	if (enableEnemySpawn) {
 		spawnEnemy();
 		enableEnemySpawn = false;
