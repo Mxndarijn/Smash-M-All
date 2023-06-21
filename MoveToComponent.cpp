@@ -17,7 +17,7 @@ MoveToComponent::~MoveToComponent()
 void MoveToComponent::update(float elapsedTime)
 {
     auto minDistanceTraveled = 0.1f;
-    speed = 0.0005f / elapsedTime;
+    speed = 0.5f * elapsedTime;
 
     auto newPos = (1 - speed) * gameObject->position + speed * target;
     auto distanceTraveled = glm::length(newPos - gameObject->position);
@@ -35,7 +35,7 @@ void MoveToComponent::update(float elapsedTime)
 
     gameObject->rotation.y = interpolateRotationExponential(glm::degrees(gameObject->rotation.y), degrees, DELTA_TIME, DURATION * elapsedTime);
 
-    if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.001f) {
+    if (glm::length(pos - target) < 0.01f && radians - gameObject->rotation.y < 0.01f) {
         gameObject->rotation.y = radians;
         gameObject->position = target;
         gameObject->removeComponent<MoveToComponent>();

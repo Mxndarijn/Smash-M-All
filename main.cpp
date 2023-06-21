@@ -110,6 +110,10 @@ int main(void)
     }
 
     glfwTerminate();
+    delete gameManager;
+    delete guiManager;
+    delete webcam;
+
     return 0;
 }
 
@@ -130,7 +134,9 @@ void init()
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             if (key == GLFW_KEY_ESCAPE)
+            {
                 glfwSetWindowShouldClose(window, true);
+            }
         });
 
     models.push_back(new ObjModel("models/world/world.obj"));
@@ -138,8 +144,6 @@ void init()
     models.push_back(new ObjModel("models/goomba/Goomba_Mario.obj"));
     models.push_back(new ObjModel("models/boo/Boo_Mario.obj"));
     models.push_back(new ObjModel("models/bulletbill/Bullet_Bill_Mario.obj"));
-
-
 
     gameManager = new GameManager(objects, models, camera, difficulty);
     gameManager->init();
